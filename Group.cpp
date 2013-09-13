@@ -4,10 +4,10 @@ Group::Group(std::string n) {
   name = n;
 }
 
-void Group::push_face(int f) {
+void Group::push_face(Face * f) {
   faces.push_back(f);
 }
 
-std::vector<int> Group::get_faces(void) {
+std::vector<Face *> Group::get_faces(void) {
   return faces;
 }

@@ -48,7 +48,7 @@ void initOpenGL() {
     mesh = new Mesh();
 
     /* OBJ("fixtures/cone.obj").load(mesh); */
-    OBJ("fixtures/cow.obj").load(mesh);
+    OBJ("fixtures/pyramid.obj").load(mesh);
 }
 
 
@@ -56,16 +56,30 @@ void display() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glColor3f(1, 0, 0);
-    glBegin(GL_POLYGON);
 
-    for (int i = 0; i < mesh->get_verts().size(); i++) {
-        std::cout << mesh->get_verts()[i]->get_coords()[0] << std::endl;
-        std::cout << mesh->get_verts()[i]->get_coords()[1] << std::endl;
-        std::cout << mesh->get_verts()[i]->get_coords()[2] << std::endl;
-        glVertex3fv(mesh->get_verts()[i]->get_coords());
+    std::vector<Group *> groups = mesh->get_groups();
+    std::vector<Vertex *> verts = mesh->get_verts();
+    std::cout << groups.size() << std::endl;
+
+    for (int i = 0; i < groups.size(); i++) {
+      std::vector<Face *> faces = groups[i]->get_faces();
+
+      std::cout << "1" << std::endl;
+      for (int j = 0; j < faces.size(); j++) {
+        Face * face = faces[j];
+        std::cout << "2" << std::endl;
+
+        std::vector<int> v = face->get_verts();
+        std::vector<int> n = face->get_norms();
+
+        glBegin(GL_POLYGON);
+        for (int k = 0; k < v.size(); k++) {
+          std::cout << "3" << std::endl;
+          glVertex3fv(verts[v[k]]->get_coords());
+        }
+        glEnd();
+      }
     }
-
-    glEnd();
 
     glutSwapBuffers();
     glFlush();

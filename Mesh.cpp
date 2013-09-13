@@ -4,6 +4,14 @@ std::vector<Vertex *> Mesh::get_verts() {
   return verts;
 }
 
+std::vector<Vertex *> Mesh::get_norms() {
+  return norms;
+}
+
+std::vector<Group *> Mesh::get_groups() {
+  return groups;
+}
+
 void Mesh::push_group(Group * g) {
   groups.push_back(g);
 }

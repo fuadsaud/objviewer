@@ -1,6 +1,5 @@
 #include <vector>
 #include "Vertex.h"
-#include "Face.h"
 #include "Group.h"
 
 class Mesh {
@@ -11,6 +10,8 @@ class Mesh {
 
   public:
     std::vector<Vertex *> get_verts();
+    std::vector<Vertex *> get_norms();
+    std::vector<Group *> get_groups();
 
     void push_group(Group * g);
     void push_vertex(Vertex * v);

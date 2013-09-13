@@ -1,14 +1,15 @@
 #include <vector>
 #include <string>
+#include "Face.h"
 
 class Group {
   public:
     Group(std::string n = "");
 
-    void push_face(int f);
-    std::vector<int> get_faces(void);
+    void push_face(Face * f);
+    std::vector<Face *> get_faces(void);
 
   private:
     std::string name;
-    std::vector<int> faces;
+    std::vector<Face *> faces;
 };

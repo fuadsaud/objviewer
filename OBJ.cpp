@@ -14,11 +14,14 @@ void OBJ::load(Mesh * m) {
   std::vector<std::string> tokens;
 
   Group * g = new Group();
+  m->push_group(g);
+
   Vertex * v;
 
   bool createGroup = false;
 
-  int lol = 0;
+  Face * face;
+  std::vector<std::string> f;
 
   while(!in.eof()) {
     std::string line;
@@ -28,21 +31,34 @@ void OBJ::load(Mesh * m) {
 
     switch(line[0]) {
       case 'v':
-        if (tokens.size() == 4) {
+        /* if (tokens.size() == 4) { */
         v = new Vertex(
             atof(tokens.at(1).c_str()),
             atof(tokens.at(2).c_str()),
             atof(tokens.at(3).c_str()));
 
         switch(line[1]) {
-          case 't': break; //TODO 
+          case 't': break; //TODO
           case 'n': m->push_normal(v); break;
           default:  m->push_vertex(v); break;
         }
-        }
+        /* } */
 
         break;
-      case 'f': break;
+      case 'f':
+        face = new Face();
+
+        for (int i = 1; i < tokens.size(); i++) {
+          f = split(tokens[i], '/');
+
+          face->push_vertex(atoi(f[0].c_str()) - 1);
+          /* face->push_vertex(f[1]); */
+          face->push_normal(atoi(f[2].c_str()) - 1);
+        }
+
+        g->push_face(face);
+
+        break;
       case 'g':
         if (createGroup) {
           if (tokens.size() == 1) {
@@ -50,6 +66,8 @@ void OBJ::load(Mesh * m) {
           } else {
             g = new Group(tokens.at(1));
           }
+
+          m->push_group(g);
         } else {
           createGroup = true;
         }
