@@ -3,7 +3,6 @@
 #include <sstream>
 #include <fstream>
 #include <iostream>
-#include <boost/algorithm/string/split.hpp>
 
 #include "Mesh.h"
 
