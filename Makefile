@@ -1,7 +1,11 @@
+CC=clang
+CFLAGS=-x c++ -l stdc++ -Wc++11-extensions
+EXECUTABLE=mesh.out
+
 all: run
 run: compile
-	./mesh.out
+	./$(EXECUTABLE)
 compile:
-	clang -x c++ *.cpp -framework OpenGL -framework GLUT -l stdc++ -o mesh.out
+	$(CC) $(CFLAGS) *.cpp -framework OpenGL -framework GLUT -o $(EXECUTABLE)
 clean:
-	rm mesh.out *.o
+	rm *.o $(EXECUTABLE)
