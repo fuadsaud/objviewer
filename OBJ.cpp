@@ -23,7 +23,9 @@ void OBJ::load(Mesh * m) {
   Face * face;
   std::vector<std::string> f;
 
+  int count = 0;
   while(!in.eof()) {
+    std::cout << ++count << std::endl;
     std::string line;
     std::getline(in, line);
 
@@ -31,18 +33,18 @@ void OBJ::load(Mesh * m) {
 
     switch(line[0]) {
       case 'v':
-        /* if (tokens.size() == 4) { */
-        v = new Vertex(
-            atof(tokens.at(1).c_str()),
-            atof(tokens.at(2).c_str()),
-            atof(tokens.at(3).c_str()));
+        if (tokens.size() == 4) {
+          v = new Vertex(
+              atof(tokens.at(1).c_str()),
+              atof(tokens.at(2).c_str()),
+              atof(tokens.at(3).c_str()));
 
-        switch(line[1]) {
-          case 't': break; //TODO
-          case 'n': m->push_normal(v); break;
-          default:  m->push_vertex(v); break;
+          switch(line[1]) {
+            case 't': break; //TODO
+            case 'n': m->push_normal(v); break;
+            default:  m->push_vertex(v); break;
+          }
         }
-        /* } */
 
         break;
       case 'f':
