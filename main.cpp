@@ -53,22 +53,23 @@ void initOpenGL() {
     glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
 
-    glEnable(GL_DEPTH_TEST | GL_LIGHTING | GL_LIGHT0);
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
 
     camera = new Camera(90);
     camera->resetView(width, height);
 
     mesh = new Mesh();
 
-    OBJ("fixtures/teapot1.obj").load(mesh);
-    std::cout << "finished loading" << std::endl;
+    OBJ("fixtures/torreDiPisa.obj").load(mesh);
 }
 
 
 void display() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    glColor3f(.86, .98, .36);
+    /* glColor3f(.86, .98, .36); */
 
     std::vector<Vertex *> verts = mesh->get_verts();
     std::vector<Vertex *> norms = mesh->get_norms();
@@ -77,12 +78,12 @@ void display() {
         for (Face * face : group->get_faces()) {
             glBegin(GL_POLYGON);
 
-            for (int i : face->get_norms()) {
-                glNormal3fv(norms[i]->get_coords());
-            }
+            std::vector<int> face_verts = face->get_verts();
+            std::vector<int> face_norms = face->get_norms();
 
-            for (int i : face->get_verts()) {
-                glVertex3fv(verts[i]->get_coords());
+            for(unsigned int x = 0; x < face_verts.size(); ++x) {
+                glNormal3fv(norms[face_norms[x]]->get_coords());
+                glVertex3fv(verts[face_verts[x]]->get_coords());
             }
 
             glEnd();
