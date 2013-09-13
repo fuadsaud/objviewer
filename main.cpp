@@ -36,8 +36,22 @@ void initOpenGL() {
     glClearColor(0.8, 0.8, 0.8, 0);
     glClearDepth(1.0);
 
-    /* GLfloat lightpos[] = {.5, 1., 1., 0.}; */
-    /* glLightfv(GL_LIGHT0, GL_POSITION, lightpos); */
+    GLfloat light_position[] = { 10.0, 1.0,  1.0,  .0 };
+    GLfloat light_specular[] = {  1.0, 1.0,   .0, 1.0 };
+    GLfloat light_diffuse[]  = {   .5,  .5,   .5, 1.0 };
+    GLfloat mat_specular[]   = {   .8,  .5,   .5, 1.0 };
+    GLfloat mat_shininess[]  = { 20.0 };
+    GLfloat mat_ambient[]    = {   .2,  .4,  .99, 1.0 };
+    GLfloat mat_diffuse[]    = {   .4,  .4,   .4, 1.0 };
+    glShadeModel (GL_SMOOTH);
+
+    glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
+    glMaterialfv(GL_FRONT, GL_AMBIENT, mat_ambient);
+    glMaterialfv(GL_FRONT, GL_DIFFUSE, mat_diffuse);
+    glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
+    glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+    glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
 
     glEnable(GL_DEPTH_TEST | GL_LIGHTING | GL_LIGHT0);
 
@@ -47,6 +61,7 @@ void initOpenGL() {
     mesh = new Mesh();
 
     OBJ("fixtures/teapot1.obj").load(mesh);
+    std::cout << "finished loading" << std::endl;
 }
 
 
@@ -59,19 +74,19 @@ void display() {
     std::vector<Vertex *> norms = mesh->get_norms();
 
     for (Group * group : mesh->get_groups()) {
-      for (Face * face : group->get_faces()) {
-        glBegin(GL_POLYGON);
+        for (Face * face : group->get_faces()) {
+            glBegin(GL_POLYGON);
 
-        for (int i : face->get_verts()) {
-            glVertex3fv(verts[i]->get_coords());
+            for (int i : face->get_norms()) {
+                glNormal3fv(norms[i]->get_coords());
+            }
+
+            for (int i : face->get_verts()) {
+                glVertex3fv(verts[i]->get_coords());
+            }
+
+            glEnd();
         }
-
-        for (int i : face->get_norms()) {
-            glNormal3fv(norms[i]->get_coords());
-        }
-
-        glEnd();
-      }
     }
 
     glutSwapBuffers();
@@ -79,46 +94,41 @@ void display() {
 }
 
 void keyboard(unsigned char key, int x, int y) {
-  if(key == 'q' || key == 'Q'){
-    exit(0);
-  }
-  else {
-    switch(key){
-      case 'a':
-      case 'A':
-        camera->moveSide(1);
-        break;
-      case 's':
-      case 'S':
-        camera->move(-1);
-        break;
-      case 'd':
-      case 'D':
-        camera->moveSide(-1);
-        break;
-      case 'w':
-      case 'W':
-        camera->move(1);
-        break;
-    }
+    if (key == 'q' || key == 'Q') {
+        exit(0);
+    } else {
+        switch(key) {
+            case 'a':
+            case 'A':
+                camera->moveSide(1); break;
+            case 's':
+            case 'S':
+                camera->move(-1); break;
+            case 'd':
+            case 'D':
+                camera->moveSide(-1); break;
+            case 'w':
+            case 'W':
+                camera->move(1); break;
+        }
 
-    glutPostRedisplay();
-  }
+        glutPostRedisplay();
+    }
 }
 
 void passiveMotionFunc(int x, int y) {
-  float y2 = (height - y) / (float) height;
+    float y2 = (height - y) / (float) height;
 
-  if (y2 != 0.5 || x != width / 2) {
-    if(y2 != 0.5) {
-      camera->setDirectionY(y2 - 0.5);
+    if (y2 != 0.5 || x != width / 2) {
+        if(y2 != 0.5) {
+            camera->setDirectionY(y2 - 0.5);
+        }
+
+        if(x != width/2) {
+            camera->changeAngle((x - width / 2) / 10);
+        }
+
+        glutWarpPointer(width / 2, height / 2);
+        glutPostRedisplay();
     }
-
-    if(x != width/2) {
-      camera->changeAngle((x - width / 2) / 10);
-    }
-
-    glutWarpPointer(width / 2, height / 2);
-    glutPostRedisplay();
-  }
 }
