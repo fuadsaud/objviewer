@@ -2,19 +2,30 @@
 #include <OpenGL/GLU.h>
 #include <GLUT/GLUT.h>
 #include <iostream>
+#include "OBJ.h"
+#include "Camera.h"
 
 void initOpenGL();
 void display();
+void keyboard(unsigned char key, int x, int y);
+void passiveMotionFunc(int x, int y);
+
+Mesh * mesh;
+Camera * camera;
+
+int width = 800, height = 600;
 
 int main(int argc, char *argv[]) {
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
-    glutInitWindowSize(800, 600);
+    glutInitWindowSize(width, height);
     glutInitWindowPosition(0, 0);
     glutCreateWindow("Mesh");
 
     initOpenGL();
 
+    glutKeyboardFunc(keyboard);
+    glutPassiveMotionFunc(passiveMotionFunc);
     glutDisplayFunc(display);
     glutMainLoop();
 
@@ -25,26 +36,82 @@ void initOpenGL() {
     glClearColor(0.8, 0.8, 0.8, 0);
     glClearDepth(1.0);
 
-    glEnable(GL_LIGHTING | GL_LIGHT0);
-    GLfloat lightpos[] = {.5, 1., 1., 0.};
-    glLightfv(GL_LIGHT0, GL_POSITION, lightpos);
+    /* glEnable(GL_LIGHTING | GL_LIGHT0); */
+    /* GLfloat lightpos[] = {.5, 1., 1., 0.}; */
+    /* glLightfv(GL_LIGHT0, GL_POSITION, lightpos); */
 
-    glViewport(0, 0, glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_WIDTH));
+    glEnable(GL_DEPTH_TEST);
 
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    gluPerspective(45, 800 / 600, 0.2, 200);
+    camera = new Camera(90);
+    camera->resetView(width, height);
 
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
+    mesh = new Mesh();
 
-    gluLookAt(-10, 8, -10, 0, 0, 0, 0, 1, 0);
+    /* OBJ("fixtures/cone.obj").load(mesh); */
+    OBJ("fixtures/cow.obj").load(mesh);
 }
 
 
 void display() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    glColor3f(1, 0, 0);
+    glBegin(GL_POLYGON);
+
+    for (int i = 0; i < mesh->get_verts().size(); i++) {
+        std::cout << mesh->get_verts()[i]->get_coords()[0] << std::endl;
+        std::cout << mesh->get_verts()[i]->get_coords()[1] << std::endl;
+        std::cout << mesh->get_verts()[i]->get_coords()[2] << std::endl;
+        glVertex3fv(mesh->get_verts()[i]->get_coords());
+    }
+
+    glEnd();
+
     glutSwapBuffers();
     glFlush();
+}
+
+void keyboard(unsigned char key, int x, int y) {
+  if(key == 'q' || key == 'Q'){
+    exit(0);
+  }
+  else {
+    switch(key){
+      case 'a':
+      case 'A':
+        camera->moveSide(1);
+        break;
+      case 's':
+      case 'S':
+        camera->move(-1);
+        break;
+      case 'd':
+      case 'D':
+        camera->moveSide(-1);
+        break;
+      case 'w':
+      case 'W':
+        camera->move(1);
+        break;
+    }
+
+    glutPostRedisplay();
+  }
+}
+
+void passiveMotionFunc(int x, int y) {
+  float y2 = (height - y) / (float) height;
+
+  if (y2 != 0.5 || x != width / 2) {
+    if(y2 != 0.5) {
+      camera->setDirectionY(y2 - 0.5);
+    }
+
+    if(x != width/2) {
+      camera->changeAngle((x - width / 2) / 10);
+    }
+
+    glutWarpPointer(width / 2, height / 2);
+    glutPostRedisplay();
+  }
 }

@@ -1,5 +1,9 @@
 #include "Mesh.h"
 
+std::vector<Vertex *> Mesh::get_verts() {
+  return verts;
+}
+
 void Mesh::push_group(Group * g) {
   groups.push_back(g);
 }
