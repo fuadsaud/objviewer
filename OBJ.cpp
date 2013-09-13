@@ -23,9 +23,7 @@ void OBJ::load(Mesh * m) {
   Face * face;
   std::vector<std::string> f;
 
-  int count = 0;
   while(!in.eof()) {
-    std::cout << ++count << std::endl;
     std::string line;
     std::getline(in, line);
 

@@ -36,47 +36,40 @@ void initOpenGL() {
     glClearColor(0.8, 0.8, 0.8, 0);
     glClearDepth(1.0);
 
-    /* glEnable(GL_LIGHTING | GL_LIGHT0); */
     /* GLfloat lightpos[] = {.5, 1., 1., 0.}; */
     /* glLightfv(GL_LIGHT0, GL_POSITION, lightpos); */
 
-    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_DEPTH_TEST | GL_LIGHTING | GL_LIGHT0);
 
     camera = new Camera(90);
     camera->resetView(width, height);
 
     mesh = new Mesh();
 
-    /* OBJ("fixtures/cone.obj").load(mesh); */
-    OBJ("fixtures/pyramid.obj").load(mesh);
+    OBJ("fixtures/teapot1.obj").load(mesh);
 }
 
 
 void display() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    glColor3f(1, 0, 0);
+    glColor3f(.86, .98, .36);
 
-    std::vector<Group *> groups = mesh->get_groups();
     std::vector<Vertex *> verts = mesh->get_verts();
-    std::cout << groups.size() << std::endl;
+    std::vector<Vertex *> norms = mesh->get_norms();
 
-    for (int i = 0; i < groups.size(); i++) {
-      std::vector<Face *> faces = groups[i]->get_faces();
-
-      std::cout << "1" << std::endl;
-      for (int j = 0; j < faces.size(); j++) {
-        Face * face = faces[j];
-        std::cout << "2" << std::endl;
-
-        std::vector<int> v = face->get_verts();
-        std::vector<int> n = face->get_norms();
-
+    for (Group * group : mesh->get_groups()) {
+      for (Face * face : group->get_faces()) {
         glBegin(GL_POLYGON);
-        for (int k = 0; k < v.size(); k++) {
-          std::cout << "3" << std::endl;
-          glVertex3fv(verts[v[k]]->get_coords());
+
+        for (int i : face->get_verts()) {
+            glVertex3fv(verts[i]->get_coords());
         }
+
+        for (int i : face->get_norms()) {
+            glNormal3fv(norms[i]->get_coords());
+        }
+
         glEnd();
       }
     }
