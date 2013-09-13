@@ -17,7 +17,9 @@ void Camera::refreshLookAt()
   // já deixa preparado para o modo transformaçòes e renderização de objetos
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
-  gluLookAt(i[0], i[1], i[2],   d[0], d[1], d[2],   0.0, 1.0, 0.0); 
+  gluLookAt(i[0], i[1], i[2],
+            d[0], d[1] + i[1], d[2],
+            0, 1, 0);
 }
 
 void Camera::resetView(int width, int height){
@@ -57,6 +59,7 @@ void Camera::setDirectionY(float y){
 
 void Camera::move(int direction){// direction = 1 to front, direction = -1 to backwards
   i[0] += SPEED * direction * getCos();
+  i[1] += SPEED * direction * d[1];
   i[2] += SPEED * direction * getSin();
   refreshDirection();
   refreshLookAt();
