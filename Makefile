@@ -1,7 +1,7 @@
 CC=clang
 CFLAGS=-x c++ -l stdc++ -Wc++11-extensions
-EXECUTABLE=mesh.out
-OBJ=fixtures/parthenon.obj
+EXECUTABLE="OBJ Viewer"
+OBJ=fixtures/car.obj
 
 all: run
 run: compile

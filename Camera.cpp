@@ -1,6 +1,6 @@
 #include "camera.h"
 
-Camera::Camera(float init_angle){
+Camera::Camera(float init_angle) {
   i = new float[3];
   i[0] = 0;
   i[1] = 0;
@@ -8,13 +8,11 @@ Camera::Camera(float init_angle){
   d = new float[3];
   d[1] = 0;
   angle = init_angle;
-  refreshDirection();
-  resetView(800, 600);
+  refresh_direction();
+  reset_view(800, 600);
 }
 
-void Camera::refreshLookAt()
-{
-  // já deixa preparado para o modo transformaçòes e renderização de objetos
+void Camera::refresh_look_at() {
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
   gluLookAt(i[0], i[1], i[2],
@@ -22,61 +20,63 @@ void Camera::refreshLookAt()
             0, 1, 0);
 }
 
-void Camera::resetView(int width, int height){
-  // define tamanho da viewport (porção visível da tela)
+void Camera::reset_view(int width, int height) {
   glViewport(0, 0, width, height);
 
-  // modo definição de matriz de visualziação
   glMatrixMode(GL_PROJECTION);
-  // limpa matrizes
   glLoadIdentity();
 
-  // define câmera com projeção perspectiva
-  gluPerspective(45.0, width / (double)height, .2, 1000);
+  gluPerspective(45.0, width / (double) height, .2, 1000);
 
-  refreshLookAt();
+  refresh_look_at();
 }
 
-void Camera::changeAngle(float angle2){
+void Camera::change_angle(float angle2) {
   angle += angle2;
-  if(angle > 360)
+
+  if(angle > 360) {
     angle -= 360;
-  else if(angle < 0)
+  } else if(angle < 0) {
     angle += 360;
-  refreshDirection();
-  refreshLookAt();
+  }
+
+  refresh_direction();
+  refresh_look_at();
 }
 
-void Camera::refreshDirection(){
-  d[0] =  getCos() + i[0];
-  d[2] =  getSin() + i[2];
+void Camera::refresh_direction() {
+  d[0] =  get_cos() + i[0];
+  d[2] =  get_sin() + i[2];
 }
 
-void Camera::setDirectionY(float y){
+void Camera::set_direction_y(float y) {
   d[1] += y;
-  refreshLookAt();
+  refresh_look_at();
 }
 
-void Camera::move(int direction){// direction = 1 to front, direction = -1 to backwards
-  i[0] += SPEED * direction * getCos();
+void Camera::move(int direction) {
+  i[0] += SPEED * direction * get_cos();
   i[1] += SPEED * direction * d[1];
-  i[2] += SPEED * direction * getSin();
-  refreshDirection();
-  refreshLookAt();
+  i[2] += SPEED * direction * get_sin();
+
+  refresh_direction();
+  refresh_look_at();
 }
 
-void Camera::moveSide(int direction){// direction = -1 to right, direction = 1 to left
+void Camera::move_side(int direction) {
   float auxAngle = angle / 180 * PI - (PI / 2);
+
   i[0] += SPEED * cos(auxAngle) * direction;
   i[2] += SPEED * sin(auxAngle) * direction;
-  refreshDirection();
-  refreshLookAt();
+
+  refresh_direction();
+  refresh_look_at();
 }
 
-float Camera::getSin(){
+float Camera::get_sin() {
   return sin(angle / 180 * PI);
 }
 
-float Camera::getCos(){
+float Camera::get_cos() {
   return cos(angle / 180 * PI);
 }

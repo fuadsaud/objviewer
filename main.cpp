@@ -2,11 +2,12 @@
 #include <OpenGL/GLU.h>
 #include <GLUT/GLUT.h>
 #include <iostream>
+
 #include "OBJ.h"
 #include "Camera.h"
 
 void initOpenGL();
-void loadModel(char * path);
+void loadModel(const char * path);
 void display();
 void keyboard(unsigned char key, int x, int y);
 void passiveMotionFunc(int x, int y);
@@ -16,12 +17,12 @@ Camera * camera;
 
 int width = 800, height = 600;
 
-int main(int argc, char *argv[]) {
+int main(int argc, char * argv[]) {
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
     glutInitWindowSize(width, height);
     glutInitWindowPosition(0, 0);
-    glutCreateWindow("Mesh");
+    glutCreateWindow("OBJ Viewer");
 
     initOpenGL();
     loadModel(argv[1]);
@@ -50,22 +51,22 @@ void initOpenGL() {
     glLightfv(GL_LIGHT0, GL_POSITION, light_position);
     glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
-    glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
-    glMaterialfv(GL_FRONT, GL_AMBIENT, mat_ambient);
-    glMaterialfv(GL_FRONT, GL_DIFFUSE, mat_diffuse);
-    glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
+    /* glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular); */
+    /* glMaterialfv(GL_FRONT, GL_AMBIENT, mat_ambient); */
+    /* glMaterialfv(GL_FRONT, GL_DIFFUSE, mat_diffuse); */
+    /* glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess); */
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
 
     camera = new Camera(90);
-    camera->resetView(width, height);
+    camera->reset_view(width, height);
 
     mesh = new Mesh();
 }
 
-void loadModel(char * path) {
+void loadModel(const char * path) {
     OBJ(path).load(mesh);
 }
 
@@ -74,24 +75,7 @@ void display() {
 
     glColor3f(.86, .98, .36);
 
-    std::vector<Vertex *> verts = mesh->get_verts();
-    std::vector<Vertex *> norms = mesh->get_norms();
-
-    for (Group * group : mesh->get_groups()) {
-        for (Face * face : group->get_faces()) {
-            glBegin(GL_POLYGON);
-
-            std::vector<int> face_verts = face->get_verts();
-            std::vector<int> face_norms = face->get_norms();
-
-            for(unsigned int x = 0; x < face_verts.size(); ++x) {
-                glNormal3fv(norms[face_norms[x]]->get_coords());
-                glVertex3fv(verts[face_verts[x]]->get_coords());
-            }
-
-            glEnd();
-        }
-    }
+    mesh->render();
 
     glutSwapBuffers();
     glFlush();
@@ -104,13 +88,13 @@ void keyboard(unsigned char key, int x, int y) {
         switch(key) {
             case 'a':
             case 'A':
-                camera->moveSide(1); break;
+                camera->move_side(1); break;
             case 's':
             case 'S':
                 camera->move(-1); break;
             case 'd':
             case 'D':
-                camera->moveSide(-1); break;
+                camera->move_side(-1); break;
             case 'w':
             case 'W':
                 camera->move(1); break;
@@ -125,11 +109,11 @@ void passiveMotionFunc(int x, int y) {
 
     if (y2 != 0.5 || x != width / 2) {
         if(y2 != 0.5) {
-            camera->setDirectionY(y2 - 0.5);
+            camera->set_direction_y(y2 - 0.5);
         }
 
         if(x != width/2) {
-            camera->changeAngle((x - width / 2) / 10);
+            camera->change_angle((x - width / 2) / 10);
         }
 
         glutWarpPointer(width / 2, height / 2);

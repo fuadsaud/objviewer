@@ -1,107 +1,90 @@
 #include "OBJ.h"
 
 OBJ::OBJ(std::string p) {
-  path = "";
+    path = p.c_str();
 }
 
-OBJ::OBJ(char * p) {
-  path = p;
+OBJ::OBJ(const char * p) {
+    path = p;
 }
 
 void OBJ::load(Mesh * m) {
-  std::ifstream in(path);
+    std::ifstream in(path);
 
-  std::vector<std::string> tokens;
+    Group * g = new Group();
+    m->push_group(g);
 
-  Group * g = new Group();
-  m->push_group(g);
+    Vertex * v;
+    Face * face;
+    std::vector<std::string> f;
+    std::vector<std::string> tokens;
+    bool use_default_group = true;
 
-  Vertex * v;
+    while(!in.eof()) {
+        std::string line;
+        std::getline(in, line);
 
-  bool createGroup = false;
+        if (line.empty()) { continue; }
 
-  Face * face;
-  std::vector<std::string> f;
+        tokens = split(line.c_str(), ' ');
 
-  while(!in.eof()) {
-    std::string line;
-    std::getline(in, line);
-    std::cout << "bol" << std::endl;
+        switch(line[0]) {
+            case 'v':
+                if (tokens.size() == 4) {
+                    v = new Vertex(
+                            atof(tokens.at(1).c_str()),
+                            atof(tokens.at(2).c_str()),
+                            atof(tokens.at(3).c_str()));
 
-    if (line.empty()) {
-        std::cout << "lolololo" << std::endl;
-        continue;
+                    switch(line[1]) {
+                        case 't': break; //TODO
+                        case 'n': m->push_normal(v); break;
+                        default:  m->push_vertex(v); break;
+                    }
+                }
+
+                break;
+            case 'f':
+                face = new Face();
+
+                for (int i = 1; i < tokens.size(); i++) {
+                    f = split(tokens[i], '/');
+
+                    face->push_vertex(atoi(f[0].c_str()) - 1);
+
+                    if (f.size() > 1) {
+                        /* face->push_vertex(f[1]); */
+                        face->push_normal(atoi(f[2].c_str()) - 1);
+                    }
+                }
+
+                g->push_face(face);
+
+                break;
+            case 'g':
+                if(use_default_group) {
+                    use_default_group = false;
+                } else {
+                    if (tokens.size() == 1) {
+                        g = new Group();
+                    } else {
+                        g = new Group(tokens.at(1));
+                    }
+
+                    m->push_group(g);
+                }
+
+                break;
+            case 'm':
+                m->set_material_library("fixtures/" + tokens[1]);
+
+                break;
+            case 'u':
+                std::string material(tokens[1]);
+                g->set_material(material);
+
+                break;
+        }
     }
-
-    tokens = split(line.c_str(), ' ');
-
-    switch(line[0]) {
-      case 'v':
-        if (tokens.size() == 4) {
-          v = new Vertex(
-              atof(tokens.at(1).c_str()),
-              atof(tokens.at(2).c_str()),
-              atof(tokens.at(3).c_str()));
-
-          switch(line[1]) {
-            case 't': break; //TODO
-            case 'n': m->push_normal(v); break;
-            default:  m->push_vertex(v); break;
-          }
-        }
-
-        break;
-      case 'f':
-        face = new Face();
-
-        std::cout << line << std::endl;
-        for (int i = 1; i < tokens.size(); i++) {
-          f = split(tokens[i], '/');
-
-          face->push_vertex(atoi(f[0].c_str()) - 1);
-          std::cout << f[0] << std::endl;
-
-          if (f.size() > 1) {
-            /* face->push_vertex(f[1]); */
-            face->push_normal(atoi(f[2].c_str()) - 1);
-          }
-        }
-
-        g->push_face(face);
-        std::cout << "lol" << std::endl;
-
-        break;
-      case 'g':
-        if (createGroup) {
-          if (tokens.size() == 1) {
-            g = new Group();
-          } else {
-            g = new Group(tokens.at(1));
-          }
-
-          m->push_group(g);
-        } else {
-          createGroup = true;
-        }
-
-        break;
-    }
-  }
 }
 
-std::vector<std::string> OBJ::split(const std::string &s, char delim) {
-  std::vector<std::string> elems;
-  split(s, delim, elems);
-  return elems;
-}
-
-std::vector<std::string>& OBJ::split(const std::string &s, char delim, std::vector<std::string> &elems) {
-  std::stringstream ss(s);
-  std::string item;
-
-  while (std::getline(ss, item, delim)) {
-    elems.push_back(item);
-  }
-
-  return elems;
-}

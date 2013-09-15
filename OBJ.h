@@ -1,21 +1,17 @@
 #include <vector>
 #include <string>
-#include <sstream>
 #include <fstream>
-#include <iostream>
 
+#include "Utils.h"
 #include "Mesh.h"
 
 class OBJ {
-public:
-  OBJ(std::string p);
-  OBJ(char * p);
+    public:
+        OBJ(std::string p);
+        OBJ(const char * p);
 
-  void load(Mesh * m);
+        void load(Mesh * m);
 
-private:
-  char * path;
-  std::vector<std::string> split(const std::string &s, char delim);
-  std::vector<std::string>& split(const std::string &s, char delim,
-                                 std::vector<std::string> &elems);
+    private:
+        const char * path;
 };
