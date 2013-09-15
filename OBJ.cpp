@@ -26,6 +26,12 @@ void OBJ::load(Mesh * m) {
   while(!in.eof()) {
     std::string line;
     std::getline(in, line);
+    std::cout << "bol" << std::endl;
+
+    if (line.empty()) {
+        std::cout << "lolololo" << std::endl;
+        continue;
+    }
 
     tokens = split(line.c_str(), ' ');
 
@@ -48,15 +54,21 @@ void OBJ::load(Mesh * m) {
       case 'f':
         face = new Face();
 
+        std::cout << line << std::endl;
         for (int i = 1; i < tokens.size(); i++) {
           f = split(tokens[i], '/');
 
           face->push_vertex(atoi(f[0].c_str()) - 1);
-          /* face->push_vertex(f[1]); */
-          face->push_normal(atoi(f[2].c_str()) - 1);
+          std::cout << f[0] << std::endl;
+
+          if (f.size() > 1) {
+            /* face->push_vertex(f[1]); */
+            face->push_normal(atoi(f[2].c_str()) - 1);
+          }
         }
 
         g->push_face(face);
+        std::cout << "lol" << std::endl;
 
         break;
       case 'g':

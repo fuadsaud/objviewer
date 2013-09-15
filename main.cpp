@@ -6,6 +6,7 @@
 #include "Camera.h"
 
 void initOpenGL();
+void loadModel(char * path);
 void display();
 void keyboard(unsigned char key, int x, int y);
 void passiveMotionFunc(int x, int y);
@@ -23,6 +24,7 @@ int main(int argc, char *argv[]) {
     glutCreateWindow("Mesh");
 
     initOpenGL();
+    loadModel(argv[1]);
 
     glutKeyboardFunc(keyboard);
     glutPassiveMotionFunc(passiveMotionFunc);
@@ -33,25 +35,25 @@ int main(int argc, char *argv[]) {
 }
 
 void initOpenGL() {
-    glClearColor(0.8, 0.8, 0.8, 0);
+    glClearColor(.0, .79, .31, 0);
     glClearDepth(1.0);
 
     GLfloat light_position[] = { 10.0, 1.0,  1.0,  .0 };
     GLfloat light_specular[] = {  1.0, 1.0,   .0, 1.0 };
     GLfloat light_diffuse[]  = {   .5,  .5,   .5, 1.0 };
     GLfloat mat_specular[]   = {   .8,  .5,   .5, 1.0 };
-    GLfloat mat_shininess[]  = { 20.0 };
     GLfloat mat_ambient[]    = {   .2,  .4,  .99, 1.0 };
     GLfloat mat_diffuse[]    = {   .4,  .4,   .4, 1.0 };
+    GLfloat mat_shininess[]  = { 20.0 };
     glShadeModel (GL_SMOOTH);
 
+    glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+    glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
     glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
     glMaterialfv(GL_FRONT, GL_AMBIENT, mat_ambient);
     glMaterialfv(GL_FRONT, GL_DIFFUSE, mat_diffuse);
     glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
-    glLightfv(GL_LIGHT0, GL_POSITION, light_position);
-    glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
-    glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_LIGHTING);
@@ -61,15 +63,16 @@ void initOpenGL() {
     camera->resetView(width, height);
 
     mesh = new Mesh();
-
-    OBJ("fixtures/torreDiPisa.obj").load(mesh);
 }
 
+void loadModel(char * path) {
+    OBJ(path).load(mesh);
+}
 
 void display() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    /* glColor3f(.86, .98, .36); */
+    glColor3f(.86, .98, .36);
 
     std::vector<Vertex *> verts = mesh->get_verts();
     std::vector<Vertex *> norms = mesh->get_norms();

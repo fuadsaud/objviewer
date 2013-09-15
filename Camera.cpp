@@ -32,7 +32,7 @@ void Camera::resetView(int width, int height){
   glLoadIdentity();
 
   // define câmera com projeção perspectiva
-  gluPerspective(45.0, width / (double)height, 0.2, 200.0);
+  gluPerspective(45.0, width / (double)height, .2, 1000);
 
   refreshLookAt();
 }

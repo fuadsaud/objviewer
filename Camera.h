@@ -4,7 +4,7 @@
 
 #define PI 3.141592653589
 
-#define SPEED 1.05
+#define SPEED 3
 
 class Camera {
   private:
