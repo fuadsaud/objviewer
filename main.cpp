@@ -3,7 +3,7 @@
 #include <GLUT/GLUT.h>
 #include <iostream>
 
-#include "OBJ.h"
+#include "loader.h"
 #include "Camera.h"
 
 void initOpenGL();
@@ -12,7 +12,7 @@ void display();
 void keyboard(unsigned char key, int x, int y);
 void passiveMotionFunc(int x, int y);
 
-Mesh * mesh;
+obj::mesh * mesh;
 Camera * camera;
 
 int width = 800, height = 600;
@@ -63,11 +63,11 @@ void initOpenGL() {
     camera = new Camera(90);
     camera->reset_view(width, height);
 
-    mesh = new Mesh();
+    mesh = new obj::mesh();
 }
 
 void loadModel(const char * path) {
-    OBJ(path).load(mesh);
+    obj::loader(path).load(mesh);
 }
 
 void display() {

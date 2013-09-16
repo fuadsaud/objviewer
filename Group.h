@@ -1,19 +1,22 @@
 #include <vector>
 #include <string>
-#include "Face.h"
 
-class Group {
-public:
-    Group(std::string n = "");
+#include "face.h"
 
-    void push_face(Face * f);
-    void set_material(std::string m);
+namespace obj {
+  class group {
+  public:
+      group(std::string n = "");
 
-    std::string get_material();
-    std::vector<Face *> get_faces(void);
+      void push_face(obj::face * f);
+      void set_material(std::string m);
 
-private:
-    std::string material;
-    std::string name;
-    std::vector<Face *> faces;
-};
+      std::string get_material();
+      std::vector<obj::face *> get_faces(void);
+
+  private:
+      std::string material;
+      std::string name;
+      std::vector<obj::face *> faces;
+  };
+}

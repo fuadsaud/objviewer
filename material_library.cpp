@@ -1,20 +1,20 @@
-#include "MaterialLibrary.h"
+#include "material_library.h"
 
-MaterialLibrary::MaterialLibrary(std::string p) {
+obj::material_library::material_library(std::string p) {
     path = p;
 
     load();
 }
 
-Material * MaterialLibrary::operator[](std::string material_name) {
+obj::material * obj::material_library::operator[](std::string material_name) {
     return materials[material_name];
 }
 
-void MaterialLibrary::load() {
+void obj::material_library::load() {
     std::cout << path << std::endl;
     std::ifstream in(path.c_str());
 
-    Material * m;
+    obj::material * m;
     std::vector<std::string> tokens;
 
     while (!in.eof()) {
@@ -26,7 +26,7 @@ void MaterialLibrary::load() {
 
         switch (line[0]) {
             case 'n':
-                m = new Material(tokens[1]);
+                m = new obj::material(tokens[1]);
 
                 break;
             case 'i':

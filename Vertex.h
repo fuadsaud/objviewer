@@ -1,10 +1,12 @@
-class Vertex {
-  private:
-    float coords[3];
+namespace obj {
+  class vertex {
+    private:
+      float coords[3];
 
-  public:
-    Vertex(float c[3]);
-    Vertex(float x, float y, float z);
+    public:
+      vertex(float c[3]);
+      vertex(float x, float y, float z);
 
-    float * get_coords(void);
-};
+      float * get_coords(void);
+  };
+}

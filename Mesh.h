@@ -1,26 +1,29 @@
 #include <vector>
 #include <map>
 #include <OpenGL/GLU.h>
-#include "Vertex.h"
-#include "Group.h"
-#include "MaterialLibrary.h"
 
-class Mesh {
-    public:
-        std::vector<Vertex *> get_verts();
-        std::vector<Vertex *> get_norms();
-        std::vector<Group *> get_groups();
+#include "vertex.h"
+#include "group.h"
+#include "material_library.h"
 
-        void push_group(Group * g);
-        void push_vertex(Vertex * v);
-        void push_normal(Vertex * n);
-        void set_material_library(std::string lib);
+namespace obj {
+    class mesh {
+        public:
+            std::vector<obj::vertex *> get_verts();
+            std::vector<obj::vertex *> get_norms();
+            std::vector<obj::group *> get_groups();
 
-        void render();
+            void push_group(obj::group * g);
+            void push_vertex(obj::vertex * v);
+            void push_normal(obj::vertex * n);
+            void set_material_library(std::string lib);
 
-    private:
-        std::vector<Group *> groups;
-        std::vector<Vertex *> verts;
-        std::vector<Vertex *> norms;
-        MaterialLibrary * materials;
-};
+            void render();
+
+        private:
+            std::vector<obj::group *> groups;
+            std::vector<obj::vertex *> verts;
+            std::vector<obj::vertex *> norms;
+            obj::material_library * materials;
+    };
+}

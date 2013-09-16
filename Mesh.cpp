@@ -1,43 +1,43 @@
-#include "Mesh.h"
+#include "mesh.h"
 
-std::vector<Vertex *> Mesh::get_verts() {
+std::vector<obj::vertex *> obj::mesh::get_verts() {
   return verts;
 }
 
-std::vector<Vertex *> Mesh::get_norms() {
+std::vector<obj::vertex *> obj::mesh::get_norms() {
   return norms;
 }
 
-std::vector<Group *> Mesh::get_groups() {
+std::vector<obj::group *> obj::mesh::get_groups() {
   return groups;
 }
 
-void Mesh::push_group(Group * g) {
+void obj::mesh::push_group(obj::group * g) {
   groups.push_back(g);
 }
 
-void Mesh::push_vertex(Vertex * v) {
+void obj::mesh::push_vertex(obj::vertex * v) {
   verts.push_back(v);
 }
 
-void Mesh::push_normal(Vertex * n) {
+void obj::mesh::push_normal(obj::vertex * n) {
   norms.push_back(n);
 }
 
-void Mesh::set_material_library(std::string path) {
-    materials = new MaterialLibrary(path);
+void obj::mesh::set_material_library(std::string path) {
+    materials = new obj::material_library(path);
 }
 
-void Mesh::render() {
-    for (Group * group : get_groups()) {
-        Material * m = (*materials)[group->get_material()];
+void obj::mesh::render() {
+    for (obj::group * group : get_groups()) {
+        obj::material * m = (*materials)[group->get_material()];
 
         glMaterialf(GL_FRONT, GL_SPECULAR, *(m->get_specular()));
         glMaterialf(GL_FRONT, GL_AMBIENT,  *(m->get_ambient()));
         glMaterialf(GL_FRONT, GL_DIFFUSE,  *(m->get_diffuse()));
         glMaterialf(GL_FRONT, GL_SHININESS, m->get_shininess());
 
-        for (Face * face : group->get_faces()) {
+        for (obj::face * face : group->get_faces()) {
             glBegin(GL_POLYGON);
 
             std::vector<int> face_verts = face->get_verts();

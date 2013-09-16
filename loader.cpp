@@ -1,21 +1,17 @@
-#include "OBJ.h"
+#include "loader.h"
 
-OBJ::OBJ(std::string p) {
+obj::loader::loader(std::string p) {
     path = p.c_str();
 }
 
-OBJ::OBJ(const char * p) {
-    path = p;
-}
+void obj::loader::load(obj::mesh * m) {
+    std::ifstream in(path.c_str());
 
-void OBJ::load(Mesh * m) {
-    std::ifstream in(path);
-
-    Group * g = new Group();
+    obj::group * g = new obj::group();
     m->push_group(g);
 
-    Vertex * v;
-    Face * face;
+    obj::vertex * v;
+    obj::face * face;
     std::vector<std::string> f;
     std::vector<std::string> tokens;
     bool use_default_group = true;
@@ -31,7 +27,7 @@ void OBJ::load(Mesh * m) {
         switch(line[0]) {
             case 'v':
                 if (tokens.size() == 4) {
-                    v = new Vertex(
+                    v = new obj::vertex(
                             atof(tokens.at(1).c_str()),
                             atof(tokens.at(2).c_str()),
                             atof(tokens.at(3).c_str()));
@@ -45,7 +41,7 @@ void OBJ::load(Mesh * m) {
 
                 break;
             case 'f':
-                face = new Face();
+                face = new obj::face();
 
                 for (int i = 1; i < tokens.size(); i++) {
                     f = split(tokens[i], '/');
@@ -66,9 +62,9 @@ void OBJ::load(Mesh * m) {
                     use_default_group = false;
                 } else {
                     if (tokens.size() == 1) {
-                        g = new Group();
+                        g = new obj::group();
                     } else {
-                        g = new Group(tokens.at(1));
+                        g = new obj::group(tokens.at(1));
                     }
 
                     m->push_group(g);

@@ -1,21 +1,21 @@
-#include "Group.h"
+#include "group.h"
 
-Group::Group(std::string n) {
+obj::group::group(std::string n) {
   name = n;
 }
 
-void Group::push_face(Face * f) {
+void obj::group::push_face(obj::face * f) {
   faces.push_back(f);
 }
 
-void Group::set_material(std::string m) {
+void obj::group::set_material(std::string m) {
     material = m;
 }
 
-std::string Group::get_material() {
+std::string obj::group::get_material() {
     return material;
 }
 
-std::vector<Face *> Group::get_faces(void) {
+std::vector<obj::face *> obj::group::get_faces(void) {
   return faces;
 }
