@@ -5,6 +5,9 @@ obj::material::material(std::string p) {
 }
 
 float obj::material::get_shininess() {
+    std::cout << "bol" << std::endl;
+    std::cout << ambient << std::endl;
+    std::cout << "lula" << std::endl;
     return shininess;
 }
 

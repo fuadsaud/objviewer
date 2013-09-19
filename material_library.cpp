@@ -6,12 +6,15 @@ obj::material_library::material_library(std::string p) {
     load();
 }
 
-obj::material * obj::material_library::operator[](std::string material_name) {
+obj::material * obj::material_library::operator[](std::string * material_name) {
+    return at(material_name);
+}
+
+obj::material * obj::material_library::at(std::string * material_name) {
     return materials[material_name];
 }
 
 void obj::material_library::load() {
-    std::cout << path << std::endl;
     std::ifstream in(path.c_str());
 
     obj::material * m;
@@ -20,13 +23,13 @@ void obj::material_library::load() {
     while (!in.eof()) {
         std::string line;
         std::getline(in, line);
-        std::cout << line << std::endl;
 
         tokens = split(line.c_str(), ' ');
 
         switch (line[0]) {
             case 'n':
                 m = new obj::material(tokens[1]);
+                materials[&tokens[1]] = m;
 
                 break;
             case 'i':

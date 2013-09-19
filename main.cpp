@@ -12,8 +12,8 @@ void display();
 void keyboard(unsigned char key, int x, int y);
 void passiveMotionFunc(int x, int y);
 
-obj::mesh * mesh;
-Camera * camera;
+obj::mesh mesh;
+obj::camera * camera;
 
 int width = 800, height = 600;
 
@@ -60,14 +60,12 @@ void initOpenGL() {
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
 
-    camera = new Camera(90);
+    camera = new obj::camera(90);
     camera->reset_view(width, height);
-
-    mesh = new obj::mesh();
 }
 
 void loadModel(const char * path) {
-    obj::loader(path).load(mesh);
+    obj::loader(path).load(&mesh);
 }
 
 void display() {
@@ -75,7 +73,7 @@ void display() {
 
     glColor3f(.86, .98, .36);
 
-    mesh->render();
+    mesh.render();
 
     glutSwapBuffers();
     glFlush();

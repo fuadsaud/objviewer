@@ -1,6 +1,6 @@
 #include "camera.h"
 
-Camera::Camera(float init_angle) {
+obj::camera::camera(float init_angle) {
   i = new float[3];
   i[0] = 0;
   i[1] = 0;
@@ -12,7 +12,7 @@ Camera::Camera(float init_angle) {
   reset_view(800, 600);
 }
 
-void Camera::refresh_look_at() {
+void obj::camera::refresh_look_at() {
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
   gluLookAt(i[0], i[1], i[2],
@@ -20,7 +20,7 @@ void Camera::refresh_look_at() {
             0, 1, 0);
 }
 
-void Camera::reset_view(int width, int height) {
+void obj::camera::reset_view(int width, int height) {
   glViewport(0, 0, width, height);
 
   glMatrixMode(GL_PROJECTION);
@@ -31,7 +31,7 @@ void Camera::reset_view(int width, int height) {
   refresh_look_at();
 }
 
-void Camera::change_angle(float angle2) {
+void obj::camera::change_angle(float angle2) {
   angle += angle2;
 
   if(angle > 360) {
@@ -44,17 +44,17 @@ void Camera::change_angle(float angle2) {
   refresh_look_at();
 }
 
-void Camera::refresh_direction() {
+void obj::camera::refresh_direction() {
   d[0] =  get_cos() + i[0];
   d[2] =  get_sin() + i[2];
 }
 
-void Camera::set_direction_y(float y) {
+void obj::camera::set_direction_y(float y) {
   d[1] += y;
   refresh_look_at();
 }
 
-void Camera::move(int direction) {
+void obj::camera::move(int direction) {
   i[0] += SPEED * direction * get_cos();
   i[1] += SPEED * direction * d[1];
   i[2] += SPEED * direction * get_sin();
@@ -63,7 +63,7 @@ void Camera::move(int direction) {
   refresh_look_at();
 }
 
-void Camera::move_side(int direction) {
+void obj::camera::move_side(int direction) {
   float auxAngle = angle / 180 * PI - (PI / 2);
 
   i[0] += SPEED * cos(auxAngle) * direction;
@@ -73,10 +73,10 @@ void Camera::move_side(int direction) {
   refresh_look_at();
 }
 
-float Camera::get_sin() {
+float obj::camera::get_sin() {
   return sin(angle / 180 * PI);
 }
 
-float Camera::get_cos() {
+float obj::camera::get_cos() {
   return cos(angle / 180 * PI);
 }

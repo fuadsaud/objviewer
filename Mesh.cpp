@@ -30,6 +30,7 @@ void obj::mesh::set_material_library(std::string path) {
 
 void obj::mesh::render() {
     for (obj::group * group : get_groups()) {
+        std::cout << *(group->get_material()) << std::endl;
         obj::material * m = (*materials)[group->get_material()];
 
         glMaterialf(GL_FRONT, GL_SPECULAR, *(m->get_specular()));
