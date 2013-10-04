@@ -30,22 +30,28 @@ void obj::mesh::set_material_library(std::string path) {
 
 void obj::mesh::render() {
     for (obj::group * group : get_groups()) {
-        std::cout << *(group->get_material()) << std::endl;
-        obj::material * m = (*materials)[group->get_material()];
+        std::string material = group->get_material();
 
-        glMaterialf(GL_FRONT, GL_SPECULAR, *(m->get_specular()));
-        glMaterialf(GL_FRONT, GL_AMBIENT,  *(m->get_ambient()));
-        glMaterialf(GL_FRONT, GL_DIFFUSE,  *(m->get_diffuse()));
-        glMaterialf(GL_FRONT, GL_SHININESS, m->get_shininess());
-
+        glColor3f(1, 1, 1);
         for (obj::face * face : group->get_faces()) {
             glBegin(GL_POLYGON);
+
+            if (!material.empty()) {
+                obj::material * m = (*materials)[group->get_material()];
+
+                std::cout << m->get_specular()[0] << std::endl;
+                glMaterialfv(GL_FRONT, GL_SPECULAR, m->get_specular());
+                glMaterialfv(GL_FRONT, GL_AMBIENT,  m->get_ambient());
+                glMaterialfv(GL_FRONT, GL_DIFFUSE,  m->get_diffuse());
+                glMaterialf(GL_FRONT, GL_SHININESS, m->get_shininess());
+            }
 
             std::vector<int> face_verts = face->get_verts();
             std::vector<int> face_norms = face->get_norms();
 
             for(unsigned int x = 0; x < face_verts.size(); ++x) {
                 glNormal3fv(norms[face_norms[x]]->get_coords());
+                std::cout << "fechou" << std::endl;
                 glVertex3fv(verts[face_verts[x]]->get_coords());
             }
 

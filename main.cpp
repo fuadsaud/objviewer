@@ -42,19 +42,11 @@ void initOpenGL() {
     GLfloat light_position[] = { 10.0, 1.0,  1.0,  .0 };
     GLfloat light_specular[] = {  1.0, 1.0,   .0, 1.0 };
     GLfloat light_diffuse[]  = {   .5,  .5,   .5, 1.0 };
-    GLfloat mat_specular[]   = {   .8,  .5,   .5, 1.0 };
-    GLfloat mat_ambient[]    = {   .2,  .4,  .99, 1.0 };
-    GLfloat mat_diffuse[]    = {   .4,  .4,   .4, 1.0 };
-    GLfloat mat_shininess[]  = { 20.0 };
     glShadeModel (GL_SMOOTH);
 
     glLightfv(GL_LIGHT0, GL_POSITION, light_position);
     glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
-    /* glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular); */
-    /* glMaterialfv(GL_FRONT, GL_AMBIENT, mat_ambient); */
-    /* glMaterialfv(GL_FRONT, GL_DIFFUSE, mat_diffuse); */
-    /* glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess); */
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_LIGHTING);

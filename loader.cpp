@@ -76,11 +76,7 @@ void obj::loader::load(obj::mesh * m) {
 
                 break;
             case 'u':
-                std::cout << "daora" << std::endl;
-                std::cout << line << std::endl;
-                std::cout << "sjow" << std::endl;
-                std::string * material = new std::string(tokens[1]);
-                std::cout << material << std::endl;
+                std::string material = std::string(tokens[1]);
                 g->set_material(material);
 
                 break;

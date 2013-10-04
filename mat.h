@@ -14,9 +14,9 @@ namespace obj {
         float * get_diffuse();
         float * get_specular();
         void set_shininess(float sh);
-        void set_ambient(float * a);
-        void set_diffuse(float * d);
-        void set_specular(float * s);
+        void set_ambient(int index, float a);
+        void set_diffuse(int index, float d);
+        void set_specular(int index, float s);
 
     private:
         std::string path;

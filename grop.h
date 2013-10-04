@@ -9,13 +9,13 @@ namespace obj {
       group(std::string n = "");
 
       void push_face(obj::face * f);
-      void set_material(std::string * m);
+      void set_material(std::string m);
 
-      std::string * get_material();
+      std::string get_material();
       std::vector<obj::face *> get_faces(void);
 
   private:
-      std::string * material;
+      std::string material;
       std::string name;
       std::vector<obj::face *> faces;
   };
