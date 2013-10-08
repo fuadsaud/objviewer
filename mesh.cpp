@@ -50,7 +50,11 @@ void obj::mesh::render() {
             std::vector<int> face_norms = face->get_norms();
 
             for(unsigned int x = 0; x < face_verts.size(); ++x) {
-                glNormal3fv(norms[face_norms[x]]->get_coords());
+                if (face_norms.size()) {
+                    std::cout << norms.size() << std::endl;
+                    std::cout << "entrou" << std::endl;
+                    glNormal3fv(norms[face_norms[x]]->get_coords());
+                }
                 std::cout << "fechou" << std::endl;
                 glVertex3fv(verts[face_verts[x]]->get_coords());
             }

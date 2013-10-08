@@ -26,7 +26,7 @@ void obj::loader::load(obj::mesh * m) {
 
         switch(line[0]) {
             case 'v':
-                if (tokens.size() == 4) {
+                if (tokens.size() > 3) {
                     v = new obj::vertex(
                             atof(tokens.at(1).c_str()),
                             atof(tokens.at(2).c_str()),
