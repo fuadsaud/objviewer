@@ -22,7 +22,7 @@ void obj::loader::load(obj::mesh * m) {
 
         if (line.empty()) { continue; }
 
-        tokens = split(line.c_str(), ' ');
+        tokens = split(line.c_str(), ' ', false);
 
         switch(line[0]) {
             case 'v':
@@ -44,7 +44,7 @@ void obj::loader::load(obj::mesh * m) {
                 face = new obj::face();
 
                 for (int i = 1; i < tokens.size(); i++) {
-                    f = split(tokens[i], '/');
+                    f = split(tokens[i], '/', true);
 
                     face->push_vertex(atoi(f[0].c_str()) - 1);
 

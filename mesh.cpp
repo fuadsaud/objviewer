@@ -39,7 +39,6 @@ void obj::mesh::render() {
             if (!material.empty()) {
                 obj::material * m = (*materials)[group->get_material()];
 
-                std::cout << m->get_specular()[0] << std::endl;
                 glMaterialfv(GL_FRONT, GL_SPECULAR, m->get_specular());
                 glMaterialfv(GL_FRONT, GL_AMBIENT,  m->get_ambient());
                 glMaterialfv(GL_FRONT, GL_DIFFUSE,  m->get_diffuse());
@@ -51,11 +50,9 @@ void obj::mesh::render() {
 
             for(unsigned int x = 0; x < face_verts.size(); ++x) {
                 if (face_norms.size()) {
-                    std::cout << norms.size() << std::endl;
-                    std::cout << "entrou" << std::endl;
                     glNormal3fv(norms[face_norms[x]]->get_coords());
                 }
-                std::cout << "fechou" << std::endl;
+
                 glVertex3fv(verts[face_verts[x]]->get_coords());
             }
 

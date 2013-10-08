@@ -24,7 +24,7 @@ void obj::material_library::load() {
         std::string line;
         std::getline(in, line);
 
-        tokens = split(line.c_str(), ' ');
+        tokens = split(line.c_str(), ' ', false);
 
         switch (line[0]) {
             case 'n':

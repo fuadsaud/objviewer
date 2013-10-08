@@ -1,18 +1,16 @@
 #include "utils.h"
 
-std::vector<std::string> split(const std::string &s, char delim) {
+std::vector<std::string> split(const std::string &s, char delim, bool include_empty_tokens) {
     std::vector<std::string> elems;
-    split(s, delim, elems);
-    return elems;
-}
-
-std::vector<std::string>& split(const std::string &s, char delim, std::vector<std::string> &elems) {
     std::stringstream ss(s);
     std::string item;
 
     while (std::getline(ss, item, delim)) {
-        elems.push_back(item);
+        if (include_empty_tokens || !item.empty()) {
+            elems.push_back(item);
+        }
     }
 
     return elems;
 }
+
