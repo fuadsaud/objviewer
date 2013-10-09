@@ -4,13 +4,17 @@
 #include <iostream>
 
 #include "loader.h"
-#include "Camera.h"
+#include "camera.h"
+
+#define BUFSIZE 512
 
 void initOpenGL();
 void loadModel(const char * path);
 void display();
 void keyboard(unsigned char key, int x, int y);
+void mouse(int button, int state, int x, int y);
 void passiveMotionFunc(int x, int y);
+void processHits(GLint hits, GLuint buffer[]);
 
 obj::mesh mesh;
 obj::camera * camera;
@@ -28,6 +32,7 @@ int main(int argc, char * argv[]) {
     loadModel(argv[1]);
 
     glutKeyboardFunc(keyboard);
+    glutMouseFunc(mouse);
     glutPassiveMotionFunc(passiveMotionFunc);
     glutDisplayFunc(display);
     glutMainLoop();
@@ -109,4 +114,59 @@ void passiveMotionFunc(int x, int y) {
         glutWarpPointer(width / 2, height / 2);
         glutPostRedisplay();
     }
+}
+
+void mouse(int button, int state, int x, int y) {
+    if (button != GLUT_LEFT_BUTTON || state != GLUT_DOWN) return;
+
+    GLuint select_buf[BUFSIZE];
+    GLint hits;
+    GLint viewport[4];
+
+    glGetIntegerv(GL_VIEWPORT, viewport);
+    glSelectBuffer(BUFSIZE, select_buf);
+
+    (void) glRenderMode(GL_SELECT);
+
+    glInitNames();
+    glPushName(0);
+
+    glMatrixMode(GL_PROJECTION);
+    glPushMatrix();
+    glLoadIdentity();
+
+    gluPickMatrix (x, viewport[3] - y, 5.0, 5.0, viewport);
+    gluPerspective(45.0, width / (double) height, 0.2, 200.0);
+
+    mesh.render();
+
+    glMatrixMode(GL_PROJECTION);
+    glPopMatrix();
+    glFlush();
+
+    hits = glRenderMode(GL_RENDER);
+
+    if (hits != 0) processHits(hits, select_buf);
+
+    glutPostRedisplay();
+}
+
+void processHits(GLint hits, GLuint buffer[]) {
+    GLuint names, *ptr, min_z, *ptr_names;
+
+    ptr = (GLuint *) buffer;
+    min_z = 0xffffffff;
+
+    for (unsigned int i = 0; i < hits; i++) {
+        names = *ptr;
+        ptr++;
+        if (*ptr < min_z) {
+            min_z = *ptr;
+            ptr_names = ptr + 2;
+        }
+
+        ptr += names + 2;
+    }
+
+    mesh.group_at(*ptr_names)->hide();
 }

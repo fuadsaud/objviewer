@@ -11,32 +11,46 @@ void obj::loader::load(obj::mesh * m) {
     m->push_group(g);
 
     obj::vertex * v;
+    obj::vertex2 * t;
     obj::face * face;
     std::vector<std::string> f;
     std::vector<std::string> tokens;
     bool use_default_group = true;
 
-    while(!in.eof()) {
+    while (!in.eof()) {
         std::string line;
         std::getline(in, line);
 
-        if (line.empty()) { continue; }
+        if (line.empty()) continue;
 
-        tokens = split(line.c_str(), ' ', false);
+        tokens = split(line, ' ', false);
 
         switch(line[0]) {
             case 'v':
                 if (tokens.size() > 3) {
-                    v = new obj::vertex(
-                            atof(tokens.at(1).c_str()),
-                            atof(tokens.at(2).c_str()),
-                            atof(tokens.at(3).c_str()));
+                    switch (line[1]) {
+                        case 't':
+                            m->push_texture(new obj::vertex2(
+                                        atof(tokens.at(1).c_str()),
+                                        atof(tokens.at(2).c_str())));
+                        case 'n':
+                            v = new obj::vertex(
+                                    atof(tokens.at(1).c_str()),
+                                    atof(tokens.at(2).c_str()),
+                                    atof(tokens.at(3).c_str()));
 
-                    switch(line[1]) {
-                        case 't': break; //TODO
-                        case 'n': m->push_normal(v); break;
-                        default:  m->push_vertex(v); break;
+                            m->push_normal(v); break;
+                        default:
+                            v = new obj::vertex(
+                                    atof(tokens.at(1).c_str()),
+                                    atof(tokens.at(2).c_str()),
+                                    atof(tokens.at(3).c_str()));
+
+                            m->push_vertex(v); break;
                     }
+                } else {
+
+                    m->push_texture(t);
                 }
 
                 break;
@@ -48,8 +62,11 @@ void obj::loader::load(obj::mesh * m) {
 
                     face->push_vertex(atoi(f[0].c_str()) - 1);
 
-                    if (f.size() > 1) {
-                        /* face->push_vertex(f[1]); */
+                    if (f.size() > 1 && !f[1].empty()) {
+                        face->push_texture(atoi(f[1].c_str()) - 1);
+                    }
+
+                    if (f.size() > 2) {
                         face->push_normal(atoi(f[2].c_str()) - 1);
                     }
                 }

@@ -10,6 +10,8 @@ namespace obj {
 
       void push_face(obj::face * f);
       void set_material(std::string m);
+      void hide();
+      bool is_visible();
 
       std::string get_material();
       std::vector<obj::face *> get_faces(void);
@@ -18,5 +20,6 @@ namespace obj {
       std::string material;
       std::string name;
       std::vector<obj::face *> faces;
+      bool visible;
   };
 }

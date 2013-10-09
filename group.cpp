@@ -3,6 +3,7 @@
 obj::group::group(std::string n) {
   name = n;
   material = "";
+  visible = true;
 }
 
 void obj::group::push_face(obj::face * f) {
@@ -19,4 +20,12 @@ std::string obj::group::get_material() {
 
 std::vector<obj::face *> obj::group::get_faces(void) {
   return faces;
+}
+
+void obj::group::hide() {
+    visible = false;
+}
+
+bool obj::group::is_visible() {
+    return visible;
 }

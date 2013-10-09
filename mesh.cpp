@@ -1,27 +1,35 @@
 #include "mesh.h"
 
+obj::group* obj::mesh::group_at(int i) {
+    return groups.at(i);
+}
+
 std::vector<obj::vertex *> obj::mesh::get_verts() {
-  return verts;
+    return verts;
 }
 
 std::vector<obj::vertex *> obj::mesh::get_norms() {
-  return norms;
+    return norms;
 }
 
 std::vector<obj::group *> obj::mesh::get_groups() {
-  return groups;
+    return groups;
 }
 
 void obj::mesh::push_group(obj::group * g) {
-  groups.push_back(g);
+    groups.push_back(g);
 }
 
 void obj::mesh::push_vertex(obj::vertex * v) {
-  verts.push_back(v);
+    verts.push_back(v);
 }
 
 void obj::mesh::push_normal(obj::vertex * n) {
-  norms.push_back(n);
+    norms.push_back(n);
+}
+
+void obj::mesh::push_texture(obj::vertex2 * t) {
+    texts.push_back(t);
 }
 
 void obj::mesh::set_material_library(std::string path) {
@@ -29,8 +37,13 @@ void obj::mesh::set_material_library(std::string path) {
 }
 
 void obj::mesh::render() {
+    int group_name = 0;
     for (obj::group * group : get_groups()) {
         std::string material = group->get_material();
+
+        glLoadName(group_name++);
+
+        if (!group->is_visible()) continue;
 
         glColor3f(1, 1, 1);
         for (obj::face * face : group->get_faces()) {
@@ -43,14 +56,25 @@ void obj::mesh::render() {
                 glMaterialfv(GL_FRONT, GL_AMBIENT,  m->get_ambient());
                 glMaterialfv(GL_FRONT, GL_DIFFUSE,  m->get_diffuse());
                 glMaterialf(GL_FRONT, GL_SHININESS, m->get_shininess());
+
+                if (m->has_texture()) {
+                    glBindTexture(GL_TEXTURE_2D, m->get_texture_id());
+                } else {
+                    glBindTexture(GL_TEXTURE_2D, 0);
+                }
             }
 
             std::vector<int> face_verts = face->get_verts();
             std::vector<int> face_norms = face->get_norms();
+            std::vector<int> face_texts = face->get_texts();
 
-            for(unsigned int x = 0; x < face_verts.size(); ++x) {
-                if (face_norms.size()) {
+            for (unsigned int x = 0; x < face_verts.size(); ++x) {
+                if (!face_norms.empty()) {
                     glNormal3fv(norms[face_norms[x]]->get_coords());
+                }
+
+                if (!face_texts.empty()) {
+                    glTexCoord2fv(texts[face_texts[x]]->get_coords());
                 }
 
                 glVertex3fv(verts[face_verts[x]]->get_coords());
