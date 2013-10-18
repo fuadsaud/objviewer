@@ -169,5 +169,7 @@ void processHits(GLint hits, GLuint buffer[]) {
         ptr += names + 2;
     }
 
-    mesh.group_at(*ptr_names)->hide();
+    /* mesh.group_at(*ptr_names)->hide(); */
+    /* mesh.group_at(*ptr_names)->erase_face_at(ptr_names[1]); */
+    mesh.set_selection(ptr_names[0], ptr_names[1]);
 }

@@ -9,6 +9,8 @@ namespace obj {
       group(std::string n = "");
 
       void push_face(obj::face * f);
+      obj::face * get_face_at(int i);
+      void erase_face_at(int i);
       void set_material(std::string m);
       void hide();
       bool is_visible();

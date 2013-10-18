@@ -1,6 +1,6 @@
 #include "mesh.h"
 
-obj::group* obj::mesh::group_at(int i) {
+obj::group * obj::mesh::group_at(int i) {
     return groups.at(i);
 }
 
@@ -36,17 +36,29 @@ void obj::mesh::set_material_library(std::string path) {
     materials = new obj::material_library(path);
 }
 
+void obj::mesh::set_selection(int group, int face) {
+    selection = groups[group]->get_face_at(face);
+}
+
 void obj::mesh::render() {
     int group_name = 0;
     for (obj::group * group : get_groups()) {
+        int face_name = 0;
+
         std::string material = group->get_material();
 
         glLoadName(group_name++);
 
         if (!group->is_visible()) continue;
 
-        glColor3f(1, 1, 1);
         for (obj::face * face : group->get_faces()) {
+            if (face == selection) {
+                glColor3f(1, 0, 1);
+            } else {
+                glColor3f(0, 0, 0);
+            }
+
+            glPushName(face_name++);
             glBegin(GL_POLYGON);
 
             if (!material.empty()) {
@@ -81,6 +93,7 @@ void obj::mesh::render() {
             }
 
             glEnd();
+            glPopName();
         }
     }
 }

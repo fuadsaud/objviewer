@@ -1,7 +1,7 @@
 CC=clang
 CFLAGS=-x c++ -l stdc++ -Wc++11-extensions
 EXECUTABLE="OBJ Viewer"
-OBJ=fixtures/bicicleta.obj
+OBJ=fixtures/cube.obj
 
 all: run
 run: compile

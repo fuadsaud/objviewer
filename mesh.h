@@ -21,6 +21,7 @@ namespace obj {
             void push_normal(obj::vertex * n);
             void push_texture(obj::vertex2 * t);
             void set_material_library(std::string lib);
+            void set_selection(int group, int face);
 
             void render();
 
@@ -30,5 +31,7 @@ namespace obj {
             std::vector<obj::vertex *> norms;
             std::vector<obj::vertex2 *> texts;
             obj::material_library * materials;
+
+            obj::face * selection;
     };
 }
