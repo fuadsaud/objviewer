@@ -1,5 +1,5 @@
 CC=clang
-CFLAGS=-x c++ -l stdc++ -Wc++11-extensions
+CFLAGS=-x c++ -l stdc++ -w
 EXECUTABLE="OBJ Viewer"
 OBJ=fixtures/cube.obj
 

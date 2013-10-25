@@ -58,6 +58,8 @@ void initOpenGL() {
     glEnable(GL_LIGHT0);
     glEnable(GL_COLOR_MATERIAL);
 
+    glLineWidth(3);
+
     camera = new obj::camera(90);
     camera->reset_view(width, height);
 }
@@ -78,26 +80,27 @@ void display() {
 }
 
 void keyboard(unsigned char key, int x, int y) {
-    if (key == 'q' || key == 'Q') {
-        exit(0);
-    } else {
-        switch(key) {
-            case 'a':
-            case 'A':
-                camera->move_side(1); break;
-            case 's':
-            case 'S':
-                camera->move(-1); break;
-            case 'd':
-            case 'D':
-                camera->move_side(-1); break;
-            case 'w':
-            case 'W':
-                camera->move(1); break;
-        }
-
-        glutPostRedisplay();
+    switch(key) {
+        case 'q':
+        case 'Q':
+            exit(0); break;
+        case 'a':
+        case 'A':
+            camera->move_side(1); break;
+        case 's':
+        case 'S':
+            camera->move(-1); break;
+        case 'd':
+        case 'D':
+            camera->move_side(-1); break;
+        case 'w':
+        case 'W':
+            camera->move(1); break;
+        case 'r':
+            mesh.toggle_render_mode(); break;
     }
+
+    glutPostRedisplay();
 }
 
 void passiveMotionFunc(int x, int y) {

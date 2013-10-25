@@ -1,5 +1,9 @@
 #include "mesh.h"
 
+obj::mesh::mesh() {
+    render_mode = GL_POLYGON;
+}
+
 obj::group * obj::mesh::group_at(int i) {
     return groups.at(i);
 }
@@ -38,6 +42,28 @@ void obj::mesh::set_material_library(std::string path) {
 
 void obj::mesh::set_selection(int group, int face) {
     selection = groups[group]->get_face_at(face);
+
+    selection->average_vertex(verts);
+}
+
+void obj::mesh::set_render_mode(int rm) {
+    render_mode = rm;
+}
+
+void obj::mesh::render_faces() {
+    set_render_mode(GL_POLYGON);
+}
+
+void obj::mesh::render_verts() {
+    set_render_mode(GL_LINE_LOOP);
+}
+
+void obj::mesh::toggle_render_mode() {
+    if (render_mode == GL_LINE_LOOP) {
+        render_faces();
+    } else {
+        render_verts();
+    }
 }
 
 void obj::mesh::render() {
@@ -55,11 +81,11 @@ void obj::mesh::render() {
             if (face == selection) {
                 glColor3f(1, 0, 1);
             } else {
-                glColor3f(0, 0, 0);
+                glColor3f(1, 1, 1);
             }
 
             glPushName(face_name++);
-            glBegin(GL_POLYGON);
+            glBegin(render_mode);
 
             if (!material.empty()) {
                 obj::material * m = (*materials)[group->get_material()];
