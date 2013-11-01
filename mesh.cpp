@@ -41,9 +41,9 @@ void obj::mesh::set_material_library(std::string path) {
 }
 
 void obj::mesh::set_selection(int group, int face) {
-    selection = groups[group]->get_face_at(face);
-
-    selection->average_vertex(verts);
+    selected_face.group_position = group;
+    selected_face.face_position = face;
+    selected_face.face = groups[group]->get_face_at(face);
 }
 
 void obj::mesh::set_render_mode(int rm) {
@@ -78,7 +78,7 @@ void obj::mesh::render() {
         if (!group->is_visible()) continue;
 
         for (obj::face * face : group->get_faces()) {
-            if (face == selection) {
+            if (face == selected_face.face) {
                 glColor3f(1, 0, 1);
             } else {
                 glColor3f(1, 1, 1);
@@ -120,6 +120,15 @@ void obj::mesh::render() {
 
             glEnd();
             glPopName();
+
+            if (render_mode == GL_LINE_LOOP) {
+                render_verts();
+            }
         }
     }
+}
+
+void obj::mesh::delete_selection() {
+    groups[selected_face.group_position]
+        ->erase_face_at(selected_face.face_position);
 }

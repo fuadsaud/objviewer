@@ -9,6 +9,12 @@
 namespace obj {
     class mesh {
         public:
+            typedef struct face_selection {
+                int group_position;
+                int face_position;
+                obj::face * face;
+            } face_selection;
+
             mesh();
 
             std::vector<obj::vertex *> get_verts();
@@ -22,10 +28,12 @@ namespace obj {
             void push_normal(obj::vertex * n);
             void push_texture(obj::vertex2 * t);
             void set_material_library(std::string lib);
-            void set_selection(int group, int face);
             void toggle_render_mode();
 
             void render();
+
+            void set_selection(int group, int face);
+            void delete_selection();
 
         private:
             void set_render_mode(int rm);
@@ -37,8 +45,9 @@ namespace obj {
             std::vector<obj::vertex *> norms;
             std::vector<obj::vertex2 *> texts;
             obj::material_library * materials;
+
             int render_mode;
 
-            obj::face * selection;
+            obj::mesh::face_selection selected_face;
     };
 }

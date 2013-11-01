@@ -98,6 +98,8 @@ void keyboard(unsigned char key, int x, int y) {
             camera->move(1); break;
         case 'r':
             mesh.toggle_render_mode(); break;
+        case 'x':
+            mesh.delete_selection(); break;
     }
 
     glutPostRedisplay();
