@@ -32,6 +32,7 @@ int main(int argc, char * argv[]) {
     glutInitWindowPosition(0, 0);
     glutCreateWindow("OBJ Viewer");
 
+    scene.initialize();
     init();
 
     loadModel(argv[1]);
@@ -47,28 +48,6 @@ int main(int argc, char * argv[]) {
 }
 
 void init() {
-    glClearColor(.1, .1, .1, 0);
-    glClearDepth(1.0);
-
-    GLfloat light_position[] = { 1.0, 1.0, 1.0, 0.0 };
-    GLfloat light_specular[] = { 1.0, 1.0, 1.0, 1.0 };
-    GLfloat light_diffuse[]  = { 1.0, 1.0, 1.0, 1.0 };
-    glShadeModel (GL_SMOOTH);
-
-    glLightfv(GL_LIGHT0, GL_POSITION, light_position);
-    glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
-    glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
-
-    glEnable(GL_DEPTH_TEST);
-    /* glEnable(GL_LIGHTING); */
-    glEnable(GL_LIGHT0);
-    glEnable(GL_COLOR_MATERIAL);
-
-    glLineWidth(3);
-    glPointSize(10);
-
-    glutSetCursor(GLUT_CURSOR_CROSSHAIR);
-
     camera = new obj::camera(90);
     camera->reset_view(width, height);
 }
