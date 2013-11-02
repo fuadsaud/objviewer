@@ -1,10 +1,9 @@
 #pragma once
 
 #include <math.h>
+#include <cmath>
 #include <OpenGL/gl.h>
 #include <GLUT/glut.h>
-
-#define PI 3.141592653589
 
 #define SPEED 3
 

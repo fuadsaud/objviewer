@@ -29,6 +29,8 @@ void obj::scene::initialize() {
     glLineWidth(3);
     glPointSize(10);
 
+    glScalef(2, 2, 5);
+
     glutSetCursor(GLUT_CURSOR_CROSSHAIR);
 
     camera = new obj::camera(90);
