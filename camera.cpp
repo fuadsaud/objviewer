@@ -62,15 +62,15 @@ void obj::camera::move(int direction) {
     switch (direction) {
         case left:
         case right:
-            i[0] += SPEED * std::cos(auxAngle) * modifier;
-            i[2] += SPEED * std::sin(auxAngle) * modifier;
+            i[0] += speed * std::cos(auxAngle) * modifier;
+            i[2] += speed * std::sin(auxAngle) * modifier;
 
             break;
         case front:
         case back:
-            i[0] += SPEED * modifier * get_cos();
-            i[1] += SPEED * modifier * d[1];
-            i[2] += SPEED * modifier * get_sin();
+            i[0] += speed * modifier * get_cos();
+            i[1] += speed * modifier * d[1];
+            i[2] += speed * modifier * get_sin();
 
             break;
     }

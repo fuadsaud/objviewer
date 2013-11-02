@@ -5,18 +5,15 @@
 #include <OpenGL/gl.h>
 #include <GLUT/glut.h>
 
-#define SPEED 3
-
 namespace obj {
     class camera {
         public:
+            const static unsigned char speed = 1;
+
             const static unsigned int left  = 0x01;
             const static unsigned int right = 0x02;
             const static unsigned int front = 0x03;
             const static unsigned int back  = 0x04;
-
-            float * i;
-            float * d;
 
             camera(float init_angle = 0);
 
@@ -28,14 +25,16 @@ namespace obj {
 
         private:
             float angle;
+            float * i;
+            float * d;
+
+            void set_eye(int x, int y, int z);
+            void refresh_look_at();
             void refresh_direction(void);
+
             int modifier_for_direction(int direction);
 
             float get_sin(void);
             float get_cos(void);
-
-            void set_eye(int x, int y, int z);
-
-            void refresh_look_at();
     };
 }
