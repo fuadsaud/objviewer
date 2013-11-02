@@ -38,9 +38,5 @@ obj::vertex * obj::face::centroid(std::vector<obj::vertex *> v) {
         centroid[2] += coords[2] / verts_size;
     }
 
-    std::cout << centroid[0] << std::endl;
-    std::cout << centroid[1] << std::endl;
-    std::cout << centroid[2] << std::endl;
-
     return new vertex(centroid);
 }
