@@ -30,6 +30,9 @@ void obj::scene::initialize() {
     glPointSize(10);
 
     glutSetCursor(GLUT_CURSOR_CROSSHAIR);
+
+    camera = new obj::camera(90);
+    camera->reset_view(width(), height());
 }
 
 void obj::scene::push_mesh(obj::mesh * m) { mesh = m; }
@@ -195,10 +198,16 @@ float obj::scene::fps() {
     return frames * 1000.0f / (current_time - timebase);
 }
 
-/* void obj::scene::move_camera_left() { camera.move(obj::camera::left); } */
-/* void obj::scene::move_camera_right() { camera.move(obj::camera::right); } */
-/* void obj::scene::move_camera_front() { camera.move(obj::camera::front); } */
-/* void obj::scene::move_camera_back() { camera.move(obj::camera::back); } */
+void obj::scene::move_camera_left() { camera->move(obj::camera::left); }
+void obj::scene::move_camera_right() { camera->move(obj::camera::right); }
+void obj::scene::move_camera_front() { camera->move(obj::camera::front); }
+void obj::scene::move_camera_back() { camera->move(obj::camera::back); }
+
+void obj::scene::look(float x, float y) {
+    if(y != 0.5) { camera->set_direction_y(y - 0.5); }
+
+    if(x != width() / 2) { camera->change_angle((x - width() / 2) / 10); }
+}
 
 int obj::scene::width() { return glutGet(GLUT_WINDOW_WIDTH); }
 int obj::scene::height() { return glutGet(GLUT_WINDOW_HEIGHT); }

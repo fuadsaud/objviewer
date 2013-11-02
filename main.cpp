@@ -5,11 +5,9 @@
 
 #include "loader.h"
 #include "scene.h"
-#include "camera.h"
 
 #define BUFSIZE 512
 
-void init();
 void idle();
 void display();
 void toggleFullScreen();
@@ -21,7 +19,6 @@ void processHits(GLint hits, GLuint buffer[]);
 
 obj::scene scene;
 obj::mesh mesh;
-obj::camera * camera;
 
 int width = 800, height = 600;
 
@@ -33,7 +30,6 @@ int main(int argc, char * argv[]) {
     glutCreateWindow("OBJ Viewer");
 
     scene.initialize();
-    init();
 
     loadModel(argv[1]);
 
@@ -45,11 +41,6 @@ int main(int argc, char * argv[]) {
     glutMainLoop();
 
     return 0;
-}
-
-void init() {
-    camera = new obj::camera(90);
-    camera->reset_view(width, height);
 }
 
 void loadModel(const char * path) {
@@ -80,10 +71,10 @@ void display() {
 void keyboard(unsigned char key, int x, int y) {
     switch(key) {
         case 'q': exit(0); break;
-        case 'a': camera->move(obj::camera::left); break;
-        case 's': camera->move(obj::camera::back); break;
-        case 'd': camera->move(obj::camera::right); break;
-        case 'w': camera->move(obj::camera::front); break;
+        case 'a': scene.move_camera_left(); break;
+        case 's': scene.move_camera_back(); break;
+        case 'd': scene.move_camera_right(); break;
+        case 'w': scene.move_camera_front(); break;
         case 'r':
                   mesh.toggle_render_mode(); break;
         case 'x':
@@ -136,13 +127,7 @@ void passiveMotion(int x, int y) {
     float y2 = (height - y) / (float) height;
 
     if (y2 != 0.5 || x != width / 2) {
-        if(y2 != 0.5) {
-            camera->set_direction_y(y2 - 0.5);
-        }
-
-        if(x != width/2) {
-            camera->change_angle((x - width / 2) / 10);
-        }
+        scene.look(x, y2);
 
         glutWarpPointer(width / 2, height / 2);
         glutPostRedisplay();

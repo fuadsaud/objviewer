@@ -23,10 +23,10 @@ namespace obj {
             void toggle_fps();
             void toggle_axis();
 
-            /* void move_camera_left(); */
-            /* void move_camera_right(); */
-            /* void move_camera_front(); */
-            /* void move_camera_back(); */
+            void move_camera_left();
+            void move_camera_right();
+            void move_camera_front();
+            void move_camera_back();
             void look(float x, float y);
 
         private:
@@ -50,7 +50,7 @@ namespace obj {
             int height();
 
             obj::mesh * mesh;
-            /* obj::camera camera; */
+            obj::camera * camera;
 
             int current_time;
             int timebase;
