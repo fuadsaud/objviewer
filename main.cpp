@@ -88,16 +88,11 @@ void display() {
 
 void keyboard(unsigned char key, int x, int y) {
     switch(key) {
-        case 'q':
-            exit(0); break;
-        case 'a':
-            camera->move_side(1); break;
-        case 's':
-            camera->move(-1); break;
-        case 'd':
-            camera->move_side(-1); break;
-        case 'w':
-            camera->move(1); break;
+        case 'q': exit(0); break;
+        case 'a': camera->move(obj::camera::LEFT); break;
+        case 's': camera->move(obj::camera::BACK); break;
+        case 'd': camera->move(obj::camera::RIGHT); break;
+        case 'w': camera->move(obj::camera::FRONT); break;
         case 'r':
             mesh.toggle_render_mode(); break;
         case 'x':

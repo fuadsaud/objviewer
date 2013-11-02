@@ -8,27 +8,33 @@
 
 namespace obj {
     class camera {
-        private:
-            float angle;
-            void refresh_direction(void);
-
         public:
+            const static int LEFT  = 0x01;
+            const static int RIGHT = 0x02;
+            const static int FRONT = 0x03;
+            const static int BACK  = 0x04;
+
             float * i;
             float * d;
 
-            camera();
-            camera(float init_angle);
+            camera(float init_angle = 0);
+
+            void reset_view(int width, int height);
+            void change_angle(float angle2);
+            void set_direction_y(float y);
+
+            void move(int direction);
+
+        private:
+            float angle;
+            void refresh_direction(void);
+            int modifier_for_direction(int direction);
 
             float get_sin(void);
             float get_cos(void);
 
-            void change_angle(float angle2);
-            void set_direction_y(float y);
             void set_eye(int x, int y, int z);
-            void move(int direction);
-            void move_side(int direction);
 
             void refresh_look_at();
-            void reset_view(int width, int height);
     };
 }

@@ -55,28 +55,38 @@ void obj::camera::set_direction_y(float y) {
 }
 
 void obj::camera::move(int direction) {
-  i[0] += SPEED * direction * get_cos();
-  i[1] += SPEED * direction * d[1];
-  i[2] += SPEED * direction * get_sin();
+    int modifier = modifier_for_direction(direction);
 
-  refresh_direction();
-  refresh_look_at();
+    float auxAngle = angle / 180 * PI - (PI / 2);
+
+    switch (direction) {
+        case LEFT:
+        case RIGHT:
+            i[0] += SPEED * cos(auxAngle) * modifier;
+            i[2] += SPEED * sin(auxAngle) * modifier;
+
+            break;
+        case FRONT:
+        case BACK:
+            i[0] += SPEED * modifier * get_cos();
+            i[1] += SPEED * modifier * d[1];
+            i[2] += SPEED * modifier * get_sin();
+
+            break;
+    }
+
+    refresh_direction();
+    refresh_look_at();
 }
 
-void obj::camera::move_side(int direction) {
-  float auxAngle = angle / 180 * PI - (PI / 2);
+float obj::camera::get_sin() { return sin(angle / 180 * PI); } 
+float obj::camera::get_cos() { return cos(angle / 180 * PI); }
 
-  i[0] += SPEED * cos(auxAngle) * direction;
-  i[2] += SPEED * sin(auxAngle) * direction;
-
-  refresh_direction();
-  refresh_look_at();
-}
-
-float obj::camera::get_sin() {
-  return sin(angle / 180 * PI);
-}
-
-float obj::camera::get_cos() {
-  return cos(angle / 180 * PI);
+int obj::camera::modifier_for_direction(int direction) {
+    switch (direction) {
+        case LEFT:
+        case FRONT: return 1;
+        case RIGHT:
+        case BACK: return -1;
+    }
 }
