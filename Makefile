@@ -1,7 +1,7 @@
 CC=clang
 CFLAGS=-x c++ -l stdc++ -w
 EXECUTABLE="OBJ Viewer"
-OBJ=fixtures/cow.obj
+OBJ=fixtures/cube.obj
 
 all: run
 run: compile

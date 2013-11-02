@@ -1,7 +1,7 @@
 #include "mesh.h"
 
 obj::mesh::mesh() {
-    render_mode = GL_POLYGON;
+    render_faces();
 }
 
 obj::group * obj::mesh::group_at(int i) {
@@ -50,16 +50,22 @@ void obj::mesh::set_render_mode(int rm) {
     render_mode = rm;
 }
 
+void obj::mesh::set_gl_render_mode(int gl_rm) {
+    gl_render_mode = gl_rm;
+}
+
 void obj::mesh::render_faces() {
-    set_render_mode(GL_POLYGON);
+    set_render_mode(FACE_MODE);
+    set_gl_render_mode(GL_POLYGON);
 }
 
 void obj::mesh::render_verts() {
-    set_render_mode(GL_LINE_LOOP);
+    set_render_mode(VERTEX_MODE);
+    set_gl_render_mode(GL_LINE_LOOP);
 }
 
 void obj::mesh::toggle_render_mode() {
-    if (render_mode == GL_LINE_LOOP) {
+    if (render_mode == VERTEX_MODE) {
         render_faces();
     } else {
         render_verts();
@@ -67,7 +73,10 @@ void obj::mesh::toggle_render_mode() {
 }
 
 void obj::mesh::render() {
+    std::cout << "render mode: " << render_mode << std::endl;
+
     int group_name = 0;
+
     for (obj::group * group : get_groups()) {
         int face_name = 0;
 
@@ -85,7 +94,7 @@ void obj::mesh::render() {
             }
 
             glPushName(face_name++);
-            glBegin(render_mode);
+            glBegin(gl_render_mode);
 
             if (!material.empty()) {
                 obj::material * m = (*materials)[group->get_material()];
@@ -121,14 +130,67 @@ void obj::mesh::render() {
             glEnd();
             glPopName();
 
-            if (render_mode == GL_LINE_LOOP) {
-                render_verts();
+            if (render_mode == VERTEX_MODE) {
+                render_verts_points();
             }
         }
     }
 }
 
-void obj::mesh::delete_selection() {
+void obj::mesh::render_verts_points() {
+    int vertex_name = 0;
+
+    glColor3f(0.76, 1, 0.04);
+
+    for (obj::vertex * v : verts) {
+        glLoadName(vertex_name++);
+
+        glBegin(GL_POINTS);
+        glVertex3fv(v->get_coords());
+        glEnd();
+    }
+
+}
+
+void obj::mesh::erase_selection() {
     groups[selected_face.group_position]
         ->erase_face_at(selected_face.face_position);
+}
+
+void obj::mesh::complexify(obj::mesh::face_selection fs) {
+    obj::vertex * centroid = fs.face->centroid(verts);
+
+    push_vertex(centroid);
+
+    std::cout << "SDSADASD: " << fs.face->get_verts().size() << std::endl;
+    for (unsigned int i = 0; i < fs.face->get_verts().size(); i++) {
+        obj::face * new_face = new obj::face();
+
+        new_face->push_vertex(fs.face->get_verts()[i]);
+        new_face->push_vertex(fs.face->get_verts()[(i + 1) % (fs.face->get_verts().size())]);
+        new_face->push_vertex(verts.size() - 1);
+
+        group_at(fs.group_position)->push_face(new_face);
+
+    }
+
+    erase_face(fs);
+}
+
+void obj::mesh::erase_face(obj::mesh::face_selection fs) {
+    group_at(fs.group_position)->erase_face_at(fs.face_position);
+}
+
+void obj::mesh::clear_selection() {
+    selected_face.group_position = 0;
+    selected_face.face_position = 0;
+    selected_face.face = NULL;
+}
+
+void obj::mesh::complexify_selection() {
+    complexify(selected_face);
+}
+
+bool obj::mesh::has_selection() {
+    selected_face.face == NULL;
 }

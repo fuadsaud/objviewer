@@ -4,6 +4,7 @@
 #include <iostream>
 
 #include "loader.h"
+#include "scene.h"
 #include "camera.h"
 
 #define BUFSIZE 512
@@ -16,6 +17,7 @@ void mouse(int button, int state, int x, int y);
 void passiveMotionFunc(int x, int y);
 void processHits(GLint hits, GLuint buffer[]);
 
+obj::scene scene;
 obj::mesh mesh;
 obj::camera * camera;
 
@@ -41,12 +43,12 @@ int main(int argc, char * argv[]) {
 }
 
 void initOpenGL() {
-    glClearColor(.0, .79, .31, 0);
+    glClearColor(.1, .1, .1, 0);
     glClearDepth(1.0);
 
-    GLfloat light_position[] = { 10.0, 1.0,  1.0,  .0 };
-    GLfloat light_specular[] = {  1.0, 1.0,   .0, 1.0 };
-    GLfloat light_diffuse[]  = {   .5,  .5,   .5, 1.0 };
+    GLfloat light_position[] = { 1.0, 1.0, 1.0, 0.0 };
+    GLfloat light_specular[] = { 1.0, 1.0, 1.0, 1.0 };
+    GLfloat light_diffuse[]  = { 1.0, 1.0, 1.0, 1.0 };
     glShadeModel (GL_SMOOTH);
 
     glLightfv(GL_LIGHT0, GL_POSITION, light_position);
@@ -54,11 +56,14 @@ void initOpenGL() {
     glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
 
     glEnable(GL_DEPTH_TEST);
-    glEnable(GL_LIGHTING);
+    /* glEnable(GL_LIGHTING); */
     glEnable(GL_LIGHT0);
     glEnable(GL_COLOR_MATERIAL);
 
     glLineWidth(3);
+    glPointSize(10);
+
+    glutSetCursor(GLUT_CURSOR_CROSSHAIR);
 
     camera = new obj::camera(90);
     camera->reset_view(width, height);
@@ -66,6 +71,8 @@ void initOpenGL() {
 
 void loadModel(const char * path) {
     obj::loader(path).load(&mesh);
+
+    scene.push_mesh(&mesh);
 }
 
 void display() {
@@ -73,7 +80,7 @@ void display() {
 
     glColor3f(.86, .98, .36);
 
-    mesh.render();
+    scene.render();
 
     glutSwapBuffers();
     glFlush();
@@ -82,24 +89,21 @@ void display() {
 void keyboard(unsigned char key, int x, int y) {
     switch(key) {
         case 'q':
-        case 'Q':
             exit(0); break;
         case 'a':
-        case 'A':
             camera->move_side(1); break;
         case 's':
-        case 'S':
             camera->move(-1); break;
         case 'd':
-        case 'D':
             camera->move_side(-1); break;
         case 'w':
-        case 'W':
             camera->move(1); break;
         case 'r':
             mesh.toggle_render_mode(); break;
         case 'x':
-            mesh.delete_selection(); break;
+            mesh.erase_selection(); break;
+        case 'y':
+            mesh.complexify_selection(); break;
     }
 
     glutPostRedisplay();
@@ -141,8 +145,8 @@ void mouse(int button, int state, int x, int y) {
     glPushMatrix();
     glLoadIdentity();
 
-    gluPickMatrix (x, viewport[3] - y, 5.0, 5.0, viewport);
-    gluPerspective(45.0, width / (double) height, 0.2, 200.0);
+    gluPickMatrix(x, viewport[3] - y, 5.0, 5.0, viewport);
+    gluPerspective(45.0, width / (double) height, .2, 200.0);
 
     mesh.render();
 

@@ -1,3 +1,5 @@
+#pragma once
+
 #include <vector>
 #include <map>
 #include <OpenGL/GLU.h>
@@ -15,6 +17,9 @@ namespace obj {
                 obj::face * face;
             } face_selection;
 
+            const unsigned int FACE_MODE = 0x01;
+            const unsigned int VERTEX_MODE = 0x02;
+
             mesh();
 
             std::vector<obj::vertex *> get_verts();
@@ -29,16 +34,26 @@ namespace obj {
             void push_texture(obj::vertex2 * t);
             void set_material_library(std::string lib);
             void toggle_render_mode();
+            void render_faces();
+            void render_verts();
 
             void render();
 
             void set_selection(int group, int face);
-            void delete_selection();
+            void erase_selection();
+            void complexify_selection();
 
         private:
             void set_render_mode(int rm);
-            void render_faces();
-            void render_verts();
+            void set_gl_render_mode(int gl_rm);
+
+            void render_verts_points();
+
+            void complexify(obj::mesh::face_selection fs);
+
+            void erase_face(obj::mesh::face_selection fs);
+            void clear_selection();
+            bool has_selection();
 
             std::vector<obj::group *> groups;
             std::vector<obj::vertex *> verts;
@@ -47,6 +62,7 @@ namespace obj {
             obj::material_library * materials;
 
             int render_mode;
+            int gl_render_mode;
 
             obj::mesh::face_selection selected_face;
     };

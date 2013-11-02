@@ -25,19 +25,22 @@ std::vector<int> obj::face::get_texts(void) {
     return texts;
 }
 
-void obj::face::average_vertex(std::vector<obj::vertex *> v) {
+obj::vertex * obj::face::centroid(std::vector<obj::vertex *> v) {
     unsigned int verts_size = verts.size();
-    float ptr[3]  = { 0, 0, 0 };
+
+    float centroid[3]  = { 0, 0, 0 };
 
     for (int i : verts) {
         float * coords = v[i]->get_coords();
 
-        ptr[0] += coords[0] / verts_size;
-        ptr[1] += coords[1] / verts_size;
-        ptr[2] += coords[2] / verts_size;
+        centroid[0] += coords[0] / verts_size;
+        centroid[1] += coords[1] / verts_size;
+        centroid[2] += coords[2] / verts_size;
     }
 
-    std::cout << ptr[0] << std::endl;
-    std::cout << ptr[1] << std::endl;
-    std::cout << ptr[2] << std::endl;
+    std::cout << centroid[0] << std::endl;
+    std::cout << centroid[1] << std::endl;
+    std::cout << centroid[2] << std::endl;
+
+    return new vertex(centroid);
 }
