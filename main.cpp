@@ -9,12 +9,14 @@
 
 #define BUFSIZE 512
 
-void initOpenGL();
-void loadModel(const char * path);
+void init();
+void idle();
 void display();
+void toggleFullScreen();
+void loadModel(const char * path);
+void passiveMotion(int x, int y);
 void keyboard(unsigned char key, int x, int y);
 void mouse(int button, int state, int x, int y);
-void passiveMotionFunc(int x, int y);
 void processHits(GLint hits, GLuint buffer[]);
 
 obj::scene scene;
@@ -30,19 +32,21 @@ int main(int argc, char * argv[]) {
     glutInitWindowPosition(0, 0);
     glutCreateWindow("OBJ Viewer");
 
-    initOpenGL();
+    init();
+
     loadModel(argv[1]);
 
     glutKeyboardFunc(keyboard);
     glutMouseFunc(mouse);
-    glutPassiveMotionFunc(passiveMotionFunc);
+    glutPassiveMotionFunc(passiveMotion);
     glutDisplayFunc(display);
+    glutIdleFunc(idle);
     glutMainLoop();
 
     return 0;
 }
 
-void initOpenGL() {
+void init() {
     glClearColor(.1, .1, .1, 0);
     glClearDepth(1.0);
 
@@ -75,6 +79,14 @@ void loadModel(const char * path) {
     scene.push_mesh(&mesh);
 }
 
+void toggleFullScreen() { glutFullScreen(); }
+
+void idle() {
+    scene.idle();
+
+    glutPostRedisplay();
+}
+
 void display() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -89,36 +101,21 @@ void display() {
 void keyboard(unsigned char key, int x, int y) {
     switch(key) {
         case 'q': exit(0); break;
-        case 'a': camera->move(obj::camera::LEFT); break;
-        case 's': camera->move(obj::camera::BACK); break;
-        case 'd': camera->move(obj::camera::RIGHT); break;
-        case 'w': camera->move(obj::camera::FRONT); break;
+        case 'a': camera->move(obj::camera::left); break;
+        case 's': camera->move(obj::camera::back); break;
+        case 'd': camera->move(obj::camera::right); break;
+        case 'w': camera->move(obj::camera::front); break;
         case 'r':
-            mesh.toggle_render_mode(); break;
+                  mesh.toggle_render_mode(); break;
         case 'x':
-            mesh.erase_selection(); break;
+                  mesh.erase_selection(); break;
         case 'y':
-            mesh.complexify_selection(); break;
+                  mesh.complexify_selection(); break;
+        case 'f':
+                  toggleFullScreen(); break;
     }
 
     glutPostRedisplay();
-}
-
-void passiveMotionFunc(int x, int y) {
-    float y2 = (height - y) / (float) height;
-
-    if (y2 != 0.5 || x != width / 2) {
-        if(y2 != 0.5) {
-            camera->set_direction_y(y2 - 0.5);
-        }
-
-        if(x != width/2) {
-            camera->change_angle((x - width / 2) / 10);
-        }
-
-        glutWarpPointer(width / 2, height / 2);
-        glutPostRedisplay();
-    }
 }
 
 void mouse(int button, int state, int x, int y) {
@@ -143,7 +140,7 @@ void mouse(int button, int state, int x, int y) {
     gluPickMatrix(x, viewport[3] - y, 5.0, 5.0, viewport);
     gluPerspective(45.0, width / (double) height, .2, 200.0);
 
-    mesh.render();
+    scene.render();
 
     glMatrixMode(GL_PROJECTION);
     glPopMatrix();
@@ -154,6 +151,23 @@ void mouse(int button, int state, int x, int y) {
     if (hits != 0) processHits(hits, select_buf);
 
     glutPostRedisplay();
+}
+
+void passiveMotion(int x, int y) {
+    float y2 = (height - y) / (float) height;
+
+    if (y2 != 0.5 || x != width / 2) {
+        if(y2 != 0.5) {
+            camera->set_direction_y(y2 - 0.5);
+        }
+
+        if(x != width/2) {
+            camera->change_angle((x - width / 2) / 10);
+        }
+
+        glutWarpPointer(width / 2, height / 2);
+        glutPostRedisplay();
+    }
 }
 
 void processHits(GLint hits, GLuint buffer[]) {
