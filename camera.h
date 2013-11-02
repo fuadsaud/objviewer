@@ -1,3 +1,5 @@
+#pragma once
+
 #include <math.h>
 #include <OpenGL/gl.h>
 #include <GLUT/glut.h>
@@ -9,10 +11,10 @@
 namespace obj {
     class camera {
         public:
-            const static int LEFT  = 0x01;
-            const static int RIGHT = 0x02;
-            const static int FRONT = 0x03;
-            const static int BACK  = 0x04;
+            const static unsigned int left  = 0x01;
+            const static unsigned int right = 0x02;
+            const static unsigned int front = 0x03;
+            const static unsigned int back  = 0x04;
 
             float * i;
             float * d;

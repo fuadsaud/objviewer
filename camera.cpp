@@ -60,14 +60,14 @@ void obj::camera::move(int direction) {
     float auxAngle = angle / 180 * PI - (PI / 2);
 
     switch (direction) {
-        case LEFT:
-        case RIGHT:
+        case left:
+        case right:
             i[0] += SPEED * cos(auxAngle) * modifier;
             i[2] += SPEED * sin(auxAngle) * modifier;
 
             break;
-        case FRONT:
-        case BACK:
+        case front:
+        case back:
             i[0] += SPEED * modifier * get_cos();
             i[1] += SPEED * modifier * d[1];
             i[2] += SPEED * modifier * get_sin();
@@ -84,9 +84,9 @@ float obj::camera::get_cos() { return cos(angle / 180 * PI); }
 
 int obj::camera::modifier_for_direction(int direction) {
     switch (direction) {
-        case LEFT:
-        case FRONT: return 1;
-        case RIGHT:
-        case BACK: return -1;
+        case left:
+        case front: return 1;
+        case right:
+        case back: return -1;
     }
 }

@@ -55,26 +55,21 @@ void obj::mesh::set_gl_render_mode(int gl_rm) {
 }
 
 void obj::mesh::render_faces() {
-    set_render_mode(FACE_MODE);
+    set_render_mode(face_mode);
     set_gl_render_mode(GL_POLYGON);
 }
 
 void obj::mesh::render_verts() {
-    set_render_mode(VERTEX_MODE);
+    set_render_mode(vertex_mode);
     set_gl_render_mode(GL_LINE_LOOP);
 }
 
 void obj::mesh::toggle_render_mode() {
-    if (render_mode == VERTEX_MODE) {
-        render_faces();
-    } else {
-        render_verts();
-    }
+    if (render_mode == vertex_mode) { render_faces(); }
+    else { render_verts(); }
 }
 
 void obj::mesh::render() {
-    std::cout << "render mode: " << render_mode << std::endl;
-
     int group_name = 0;
 
     for (obj::group * group : get_groups()) {
@@ -130,9 +125,7 @@ void obj::mesh::render() {
             glEnd();
             glPopName();
 
-            if (render_mode == VERTEX_MODE) {
-                render_verts_points();
-            }
+            if (render_mode == vertex_mode) { render_verts_points(); }
         }
     }
 }
@@ -162,7 +155,6 @@ void obj::mesh::complexify(obj::mesh::face_selection fs) {
 
     push_vertex(centroid);
 
-    std::cout << "SDSADASD: " << fs.face->get_verts().size() << std::endl;
     for (unsigned int i = 0; i < fs.face->get_verts().size(); i++) {
         obj::face * new_face = new obj::face();
 

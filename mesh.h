@@ -17,8 +17,8 @@ namespace obj {
                 obj::face * face;
             } face_selection;
 
-            const unsigned int FACE_MODE = 0x01;
-            const unsigned int VERTEX_MODE = 0x02;
+            const static unsigned int face_mode = 0x01;
+            const static unsigned int vertex_mode = 0x02;
 
             mesh();
 
