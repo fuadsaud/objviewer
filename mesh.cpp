@@ -40,10 +40,16 @@ void obj::mesh::set_material_library(std::string path) {
     materials = new obj::material_library(path);
 }
 
-void obj::mesh::set_selection(int group, int face) {
-    selected_face.group_position = group;
-    selected_face.face_position = face;
-    selected_face.face = groups[group]->get_face_at(face);
+void obj::mesh::set_selection(int group_or_vertex, int face) {
+    if (render_mode == vertex_mode) {
+        std::cout << "SELDEFLDJNV VERGEC" << group_or_vertex << std::endl;
+        selected_vertex.vertex_position = group_or_vertex;
+        selected_vertex.vertex = verts[group_or_vertex];
+    } else {
+        selected_face.group_position = group_or_vertex;
+        selected_face.face_position = face;
+        selected_face.face = groups[group_or_vertex]->get_face_at(face);
+    }
 }
 
 void obj::mesh::set_render_mode(int rm) {
@@ -70,6 +76,8 @@ void obj::mesh::toggle_render_mode() {
 }
 
 void obj::mesh::render() {
+    if (render_mode == vertex_mode) render_verts_points();
+
     int group_name = 0;
 
     for (obj::group * group : get_groups()) {
@@ -77,18 +85,17 @@ void obj::mesh::render() {
 
         std::string material = group->get_material();
 
-        glLoadName(group_name++);
+        if (render_mode == face_mode) glLoadName(group_name++);
 
         if (!group->is_visible()) continue;
 
         for (obj::face * face : group->get_faces()) {
-            if (face == selected_face.face) {
-                glColor3f(1, 0, 1);
-            } else {
-                glColor3f(1, 1, 1);
+            if (render_mode == face_mode) {
+                if (face == selected_face.face) glColor3f(.78, .29, .15);
+
+                glPushName(face_name++);
             }
 
-            glPushName(face_name++);
             glBegin(gl_render_mode);
 
             if (!material.empty()) {
@@ -125,7 +132,8 @@ void obj::mesh::render() {
             glEnd();
             glPopName();
 
-            if (render_mode == vertex_mode) { render_verts_points(); }
+            if (render_mode == face_mode &&
+                    face == selected_face.face) glColor3f(.4, .57, .59);
         }
     }
 }
@@ -133,21 +141,61 @@ void obj::mesh::render() {
 void obj::mesh::render_verts_points() {
     int vertex_name = 0;
 
-    glColor3f(0.76, 1, 0.04);
-
     for (obj::vertex * v : verts) {
         glLoadName(vertex_name++);
+
+        if (selected_vertex.vertex == v) glColor3f(0.41, .58, .19);
 
         glBegin(GL_POINTS);
         glVertex3fv(v->get_coords());
         glEnd();
+
+        if (selected_vertex.vertex == v) glColor3f(0.72, .53, 0.17);
     }
 
 }
 
 void obj::mesh::erase_selection() {
-    groups[selected_face.group_position]
-        ->erase_face_at(selected_face.face_position);
+    if (render_mode == vertex_mode) {
+        erase_vertex(selected_vertex);
+    } else {
+        group_at(selected_face.group_position)
+            ->erase_face_at(selected_face.face_position);
+    }
+}
+
+void obj::mesh::erase_vertex(obj::mesh::vertex_selection vs) {
+    std::set<int> verts;
+
+    for (obj::group * group : groups) {
+        std::cout << "df" << std::endl;
+        std::vector<int> faces_to_erase;
+
+        unsigned int faces_count = group->get_faces().size();
+
+        for (unsigned int i = 0; i < faces_count; i++) {
+            obj::face * face = group->get_faces()[i];
+            std::vector<int> face_verts = face->get_verts();
+
+            if (std::find(face_verts.begin(), face_verts.end(), vs.vertex_position) != face_verts.end()) {
+                for (int vertex : face_verts) {
+                    verts.insert(vertex);
+                }
+
+                faces_to_erase.push_back(i);
+            }
+        }
+
+        for (int i : faces_to_erase) group->erase_face_at(i);
+    }
+
+    verts.erase(vs.vertex_position);
+
+    obj::face * new_face = new obj::face();
+
+    for (int i : verts) new_face.push_vertex();
+
+    groups.back().push_face(new_face);
 }
 
 void obj::mesh::complexify(obj::mesh::face_selection fs) {
@@ -169,6 +217,11 @@ void obj::mesh::complexify(obj::mesh::face_selection fs) {
     erase_face(fs);
 }
 
+void obj::mesh::move(int direction, obj::mesh::vertex_selection vs) {
+    verts[vs.vertex_position] =
+        verts[vs.vertex_position]->move(direction);
+}
+
 void obj::mesh::erase_face(obj::mesh::face_selection fs) {
     group_at(fs.group_position)->erase_face_at(fs.face_position);
 }
@@ -179,8 +232,10 @@ void obj::mesh::clear_selection() {
     selected_face.face = NULL;
 }
 
-void obj::mesh::complexify_selection() {
-    complexify(selected_face);
+void obj::mesh::complexify_selection() { complexify(selected_face); }
+
+void obj::mesh::move_selection(int direction) {
+    move(direction, selected_vertex);
 }
 
 bool obj::mesh::has_selection() {

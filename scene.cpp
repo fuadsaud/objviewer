@@ -9,7 +9,7 @@ obj::scene::scene(bool hud, bool fps, bool axis) {
 }
 
 void obj::scene::initialize() {
-    glClearColor(.1, .1, .1, 0);
+    glClearColor(.1, .16, .19, 0);
     glClearDepth(1.0);
 
     GLfloat light_position[] = { 1.0, 1.0, 1.0, 0.0 };
@@ -27,7 +27,7 @@ void obj::scene::initialize() {
     glEnable(GL_COLOR_MATERIAL);
 
     glLineWidth(3);
-    glPointSize(10);
+    glPointSize(20);
 
     glScalef(2, 2, 5);
 
@@ -51,15 +51,15 @@ void obj::scene::render() {
 void obj::scene::render_hud() {
     go2d();
 
-    if (will_render_fps)  render_fps();
+    if (will_render_fps) render_fps();
 }
 
 
 void obj::scene::render_fps() {
-    char * s = "kjdnfksdnfk";
+    char * s = "";
 
     std::cout << fps() << std::endl;
-    /* sprintf(s, "FPS: %4.2f", fps()); */
+    sprintf(s, "FPS: %4.2f", fps());
 
     render_string(s, 10, 8, 1, .85, .95);
 }

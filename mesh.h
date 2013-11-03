@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <map>
+#include <set>
 #include <OpenGL/GLU.h>
 
 #include "vertex2.h"
@@ -16,6 +17,11 @@ namespace obj {
                 int face_position;
                 obj::face * face;
             } face_selection;
+
+            typedef struct vertex_selection {
+                int vertex_position;
+                obj::vertex * vertex;
+            } vertex_selection;
 
             const static unsigned int face_mode = 0x01;
             const static unsigned int vertex_mode = 0x02;
@@ -42,6 +48,7 @@ namespace obj {
             void set_selection(int group, int face);
             void erase_selection();
             void complexify_selection();
+            void move_selection(int direction);
 
         private:
             void set_render_mode(int rm);
@@ -50,8 +57,10 @@ namespace obj {
             void render_verts_points();
 
             void complexify(obj::mesh::face_selection fs);
+            void move(int direction, obj::mesh::vertex_selection vs);
 
             void erase_face(obj::mesh::face_selection fs);
+            void erase_vertex(obj::mesh::vertex_selection vs);
             void clear_selection();
             bool has_selection();
 
@@ -65,5 +74,6 @@ namespace obj {
             int gl_render_mode;
 
             obj::mesh::face_selection selected_face;
+            obj::mesh::vertex_selection selected_vertex;
     };
 }

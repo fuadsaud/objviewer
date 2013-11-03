@@ -75,6 +75,12 @@ void keyboard(unsigned char key, int x, int y) {
         case 's': scene.move_camera_back(); break;
         case 'd': scene.move_camera_right(); break;
         case 'w': scene.move_camera_front(); break;
+        case 'h': mesh.move_selection(obj::vertex::x_neg); break;
+        case 'j': mesh.move_selection(obj::vertex::y_neg); break;
+        case 'k': mesh.move_selection(obj::vertex::y_pos); break;
+        case 'l': mesh.move_selection(obj::vertex::x_pos); break;
+        case 'u': mesh.move_selection(obj::vertex::z_pos); break;
+        case 'n': mesh.move_selection(obj::vertex::z_neg); break;
         case 'r':
                   mesh.toggle_render_mode(); break;
         case 'x':
@@ -151,7 +157,5 @@ void processHits(GLint hits, GLuint buffer[]) {
         ptr += names + 2;
     }
 
-    /* mesh.group_at(*ptr_names)->hide(); */
-    /* mesh.group_at(*ptr_names)->erase_face_at(ptr_names[1]); */
     mesh.set_selection(ptr_names[0], ptr_names[1]);
 }
