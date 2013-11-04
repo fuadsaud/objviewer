@@ -43,6 +43,7 @@ void obj::mesh::set_material_library(std::string path) {
 void obj::mesh::set_selection(int group_or_vertex, int face) {
     if (render_mode == vertex_mode) {
         std::cout << "SELDEFLDJNV VERGEC" << group_or_vertex << std::endl;
+        group_or_vertex = verts.size() - 1;
         selected_vertex.vertex_position = group_or_vertex;
         selected_vertex.vertex = verts[group_or_vertex];
     } else {
@@ -123,7 +124,7 @@ void obj::mesh::render() {
                 }
 
                 if (!face_texts.empty()) {
-                    glTexCoord2fv(texts[face_texts[x]]->get_coords());
+                    /* glTexCoord2fv(texts[face_texts[x]]->get_coords()); */
                 }
 
                 glVertex3fv(verts[face_verts[x]]->get_coords());
@@ -165,37 +166,48 @@ void obj::mesh::erase_selection() {
 }
 
 void obj::mesh::erase_vertex(obj::mesh::vertex_selection vs) {
-    std::set<int> verts;
+    if (verts.empty()) return;
+
+    std::set<int> affected_verts;
 
     for (obj::group * group : groups) {
-        std::cout << "df" << std::endl;
+        std::cout << "groups" << std::endl;
         std::vector<int> faces_to_erase;
 
         unsigned int faces_count = group->get_faces().size();
 
         for (unsigned int i = 0; i < faces_count; i++) {
+            std::cout << "faces" << std::endl;
             obj::face * face = group->get_faces()[i];
             std::vector<int> face_verts = face->get_verts();
 
             if (std::find(face_verts.begin(), face_verts.end(), vs.vertex_position) != face_verts.end()) {
                 for (int vertex : face_verts) {
-                    verts.insert(vertex);
+                    std::cout << "verts" << std::endl;
+                    affected_verts.insert(vertex);
                 }
 
                 faces_to_erase.push_back(i);
             }
         }
+        std::cout << "after" << std::endl;
 
-        for (int i : faces_to_erase) group->erase_face_at(i);
+        for (unsigned int i = 0; i < faces_to_erase.size(); i++) {
+            group->erase_face_at(faces_to_erase[i] - i);
+            std::cout << "erasing face " << i << std::endl;
+        }
+
+        std::cout << "end" << std::endl;
     }
 
-    verts.erase(vs.vertex_position);
+    affected_verts.erase(vs.vertex_position);
+    verts.erase(verts.begin() + vs.vertex_position);
 
     obj::face * new_face = new obj::face();
 
-    for (int i : verts) new_face.push_vertex();
+    for (int v : affected_verts) new_face->push_vertex(v);
 
-    groups.back().push_face(new_face);
+    groups.back()->push_face(new_face);
 }
 
 void obj::mesh::complexify(obj::mesh::face_selection fs) {
