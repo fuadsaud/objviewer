@@ -41,8 +41,8 @@ namespace obj {
             void push_texture(obj::vertex2 * t);
             void set_material_library(std::string lib);
             void toggle_render_mode();
-            void render_faces();
-            void render_verts();
+            void enter_faces_render_mode();
+            void enter_verts_render_mode();
 
             void render();
 

@@ -1,7 +1,7 @@
 #include "mesh.h"
 
 obj::mesh::mesh() {
-    render_faces();
+    enter_faces_render_mode();
 }
 
 obj::group * obj::mesh::group_at(int i) {
@@ -59,19 +59,19 @@ void obj::mesh::set_gl_render_mode(int gl_rm) {
     gl_render_mode = gl_rm;
 }
 
-void obj::mesh::render_faces() {
+void obj::mesh::enter_faces_render_mode() {
     set_render_mode(face_mode);
     set_gl_render_mode(GL_POLYGON);
 }
 
-void obj::mesh::render_verts() {
+void obj::mesh::enter_verts_render_mode() {
     set_render_mode(vertex_mode);
     set_gl_render_mode(GL_LINE_LOOP);
 }
 
 void obj::mesh::toggle_render_mode() {
-    if (render_mode == vertex_mode) { render_faces(); }
-    else { render_verts(); }
+    if (render_mode == vertex_mode) { enter_faces_render_mode(); }
+    else { enter_verts_render_mode(); }
 }
 
 void obj::mesh::render() {
