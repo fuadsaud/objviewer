@@ -186,9 +186,7 @@ void obj::mesh::erase_vertex(obj::mesh::vertex_selection vs) {
             }
         }
 
-        std::reverse(faces_to_erase.begin(), faces_to_erase.end());
-
-        for (int face_to_erase : faces_to_erase) {
+        for (int face_to_erase : std::vector<int>(faces_to_erase.rbegin(), faces_to_erase.rend())) {
             group->erase_face_at(face_to_erase);
         }
     }
