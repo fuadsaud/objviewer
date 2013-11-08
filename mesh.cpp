@@ -169,33 +169,26 @@ void obj::mesh::erase_vertex(obj::mesh::vertex_selection vs) {
     std::set<int> affected_verts;
 
     for (obj::group * group : groups) {
-        std::cout << "groups" << std::endl;
         std::vector<int> faces_to_erase;
 
         unsigned int faces_count = group->get_faces().size();
 
         for (unsigned int i = 0; i < faces_count; i++) {
-            std::cout << "faces" << std::endl;
             obj::face * face = group->get_faces()[i];
             std::vector<int> face_verts = face->get_verts();
 
             if (std::find(face_verts.begin(), face_verts.end(), vs.vertex_position) != face_verts.end()) {
                 for (int vertex : face_verts) {
-                    std::cout << "verts" << std::endl;
                     affected_verts.insert(vertex);
                 }
 
                 faces_to_erase.push_back(i);
             }
         }
-        std::cout << "after" << std::endl;
 
         for (unsigned int i = 0; i < faces_to_erase.size(); i++) {
             group->erase_face_at(faces_to_erase[i] - i);
-            std::cout << "erasing face " << i << std::endl;
         }
-
-        std::cout << "end" << std::endl;
     }
 
     affected_verts.erase(vs.vertex_position);
