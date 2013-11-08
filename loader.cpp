@@ -15,7 +15,6 @@ void obj::loader::load(obj::mesh * m) {
     obj::face * face;
     std::vector<std::string> f;
     std::vector<std::string> tokens;
-    bool use_default_group = true;
 
     while (!in.eof()) {
         std::string line;
@@ -75,9 +74,7 @@ void obj::loader::load(obj::mesh * m) {
 
                 break;
             case 'g':
-                if(use_default_group) {
-                    use_default_group = false;
-                } else {
+                if (!g->get_faces().empty()) {
                     if (tokens.size() == 1) {
                         g = new obj::group();
                     } else {
