@@ -221,7 +221,7 @@ void obj::scene::move_camera_back() { camera->move(obj::camera::back); }
 void obj::scene::look(float x, float y) {
     if(y != 0.5) { camera->set_direction_y(y - 0.5); }
 
-    if(x != width() / 2) { camera->change_angle((x - width() / 2) / 10); }
+    if(x != width() / 2.0) { camera->change_angle((x - width() / 2.0) / 10); }
 }
 
 int obj::scene::width() { return glutGet(GLUT_WINDOW_WIDTH); }

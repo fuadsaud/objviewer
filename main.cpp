@@ -137,10 +137,10 @@ void mouse(int button, int state, int x, int y) {
 void passiveMotion(int x, int y) {
     float y2 = (height - y) / (float) height;
 
-    if (y2 != 0.5 || x != width / 2) {
+    if (y2 != 0.5 || x != width / 2.0) {
         scene.look(x, y2);
 
-        glutWarpPointer(width / 2, height / 2);
+        glutWarpPointer(width / 2.0, height / 2.0);
         glutPostRedisplay();
     }
 }
