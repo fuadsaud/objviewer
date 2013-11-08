@@ -44,6 +44,8 @@ void obj::scene::reset_camera() {
     camera->reset_view(width(), height());
 }
 
+void obj::scene::reshape() { reset_camera(); }
+
 int obj::scene::elapsed_time() {
     return glutGet(GLUT_ELAPSED_TIME);
 }

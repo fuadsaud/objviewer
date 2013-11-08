@@ -28,6 +28,7 @@ namespace obj {
             void move_camera_front();
             void move_camera_back();
             void look(float x, float y);
+            void reshape();
 
         private:
             void render_hud();

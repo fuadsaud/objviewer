@@ -42,6 +42,7 @@ void obj::mesh::set_material_library(std::string path) {
 
 void obj::mesh::set_selection(int group_or_vertex, int face) {
     if (render_mode == vertex_mode) {
+        group_or_vertex = verts.size() - 1;
         selected_vertex.vertex_position = group_or_vertex;
         selected_vertex.vertex = verts[group_or_vertex];
     } else {

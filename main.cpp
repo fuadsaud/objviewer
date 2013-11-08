@@ -13,6 +13,7 @@ void display();
 void toggleFullScreen();
 void loadModel(const char * path);
 void passiveMotion(int x, int y);
+void reshapeFunc(int w, int h);
 void keyboard(unsigned char key, int x, int y);
 void mouse(int button, int state, int x, int y);
 void processHits(GLint hits, GLuint buffer[]);
@@ -37,6 +38,7 @@ int main(int argc, char * argv[]) {
     glutMouseFunc(mouse);
     glutMotionFunc(passiveMotion);
     glutPassiveMotionFunc(passiveMotion);
+    glutReshapeFunc(reshapeFunc);
     glutDisplayFunc(display);
     glutIdleFunc(idle);
     glutMainLoop();
@@ -90,6 +92,8 @@ void keyboard(unsigned char key, int x, int y) {
                   mesh.complexify_selection(); break;
         case 'f':
                   toggleFullScreen(); break;
+        case '9':
+                  scene.toggle_axis(); break;
     }
 
     glutPostRedisplay();
@@ -159,4 +163,15 @@ void processHits(GLint hits, GLuint buffer[]) {
     }
 
     mesh.set_selection(ptr_names[0], ptr_names[1]);
+}
+
+void reshapeFunc(int w, int h) {
+    if (h < 1) h = 1;
+
+    width  = w;
+    height = h;
+
+    glutWarpPointer(width / 2, height / 2);
+
+    scene.reshape();
 }
