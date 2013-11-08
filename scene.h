@@ -12,7 +12,7 @@ namespace obj {
             void push_mesh(obj::mesh * mesh);
 
             void initialize();
-            void render();
+            void render(bool select_mode = false);
             void idle();
 
             void set_hud_visibility(bool v);

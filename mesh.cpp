@@ -42,7 +42,7 @@ void obj::mesh::set_material_library(std::string path) {
 
 void obj::mesh::set_selection(int group_or_vertex, int face) {
     if (render_mode == vertex_mode) {
-        group_or_vertex = verts.size() - 1;
+        std::cout << group_or_vertex << std::endl;
         selected_vertex.vertex_position = group_or_vertex;
         selected_vertex.vertex = verts[group_or_vertex];
     } else {
@@ -75,8 +75,17 @@ void obj::mesh::toggle_render_mode() {
     else { enter_verts_render_mode(); }
 }
 
-void obj::mesh::render() {
-    if (render_mode == vertex_mode) render_verts_points();
+void obj::mesh::render(bool select_mode) {
+    if (render_mode == vertex_mode) {
+        if (select_mode) {
+            render_named_verts();
+            std::cout << "DSFSDFDSF" << std::endl;
+
+            return;
+        } else {
+            render_unnamed_verts();
+        }
+    }
 
     int group_name = 0;
 
@@ -138,7 +147,20 @@ void obj::mesh::render() {
     }
 }
 
-void obj::mesh::render_verts_points() {
+void obj::mesh::render_unnamed_verts() {
+    glBegin(GL_POINTS);
+    for (obj::vertex * v : verts) {
+        if (selected_vertex.vertex == v) glColor3f(0.41, .58, .19);
+
+        glVertex3fv(v->get_coords());
+
+        if (selected_vertex.vertex == v) glColor3f(0.72, .53, 0.17);
+    }
+    glEnd();
+
+}
+
+void obj::mesh::render_named_verts() {
     int vertex_name = 0;
 
     for (obj::vertex * v : verts) {

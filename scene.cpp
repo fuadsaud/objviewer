@@ -54,11 +54,11 @@ void obj::scene::push_mesh(obj::mesh * m) { mesh = m; }
 
 void obj::scene::idle() { refresh_fps(); }
 
-void obj::scene::render() {
+void obj::scene::render(bool select_mode) {
     /* if (will_render_hud) render_hud(); */
-    if (will_render_axis) render_axis();
+    if (will_render_axis && !select_mode) render_axis();
 
-    mesh->render();
+    mesh->render(select_mode);
 }
 
 void obj::scene::render_hud() {

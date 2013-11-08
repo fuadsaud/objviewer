@@ -43,7 +43,7 @@ namespace obj {
             void enter_faces_render_mode();
             void enter_verts_render_mode();
 
-            void render();
+            void render(bool select_mode);
 
             void set_selection(int group, int face);
             void erase_selection();
@@ -54,7 +54,8 @@ namespace obj {
             void set_render_mode(int rm);
             void set_gl_render_mode(int gl_rm);
 
-            void render_verts_points();
+            void render_named_verts();
+            void render_unnamed_verts();
 
             void complexify(obj::mesh::face_selection fs);
             void move(int direction, obj::mesh::vertex_selection vs);
