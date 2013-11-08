@@ -186,8 +186,10 @@ void obj::mesh::erase_vertex(obj::mesh::vertex_selection vs) {
             }
         }
 
-        for (unsigned int i = 0; i < faces_to_erase.size(); i++) {
-            group->erase_face_at(faces_to_erase[i] - i);
+        std::reverse(faces_to_erase.begin(), faces_to_erase.end());
+
+        for (int face_to_erase : faces_to_erase) {
+            group->erase_face_at(face_to_erase);
         }
     }
 
