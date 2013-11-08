@@ -35,6 +35,7 @@ int main(int argc, char * argv[]) {
 
     glutKeyboardFunc(keyboard);
     glutMouseFunc(mouse);
+    glutMotionFunc(passiveMotion);
     glutPassiveMotionFunc(passiveMotion);
     glutDisplayFunc(display);
     glutIdleFunc(idle);
