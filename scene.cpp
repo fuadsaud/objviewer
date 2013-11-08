@@ -33,8 +33,19 @@ void obj::scene::initialize() {
 
     glutSetCursor(GLUT_CURSOR_CROSSHAIR);
 
+    current_time = timebase = elapsed_time();
+
     camera = new obj::camera(90);
+
+    reset_camera();
+}
+
+void obj::scene::reset_camera() {
     camera->reset_view(width(), height());
+}
+
+int obj::scene::elapsed_time() {
+    return glutGet(GLUT_ELAPSED_TIME);
 }
 
 void obj::scene::push_mesh(obj::mesh * m) { mesh = m; }

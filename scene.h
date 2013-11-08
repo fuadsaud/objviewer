@@ -46,6 +46,9 @@ namespace obj {
             void refresh_fps();
             float fps();
 
+            void reset_camera();
+            int elapsed_time();
+
             int width();
             int height();
 
