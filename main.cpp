@@ -114,7 +114,7 @@ void mouse(int button, int state, int x, int y) {
     glPushMatrix();
     glLoadIdentity();
 
-    gluPickMatrix(x, viewport[3] - y, 5.0, 5.0, viewport);
+    gluPickMatrix((GLdouble) x, (GLdouble) viewport[3] - y, 5.0, 5.0, viewport);
     gluPerspective(45.0, width / (double) height, .2, 200.0);
 
     scene.render();
